@@ -80,7 +80,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
+	railCamera_->Update();
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->GetIsDead()) {
@@ -158,11 +158,15 @@ void GameScene::Update() {
 	CheckAllCollision();
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_Q) && isDebugCameraActive_ == false) {
+	if (input_->PushKey(DIK_LALT)) {
 		isDebugCameraActive_ = true;
 	}
+	else {
+		isDebugCameraActive_ = false;
+
+	}
 #endif
-	railCamera_->Update();
+	
 
 	viewProjection_.matView = railCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
@@ -221,7 +225,7 @@ void GameScene::Draw() {
 	/// </summary>
 	skydome_->Draw(viewProjection_);
 
-	floor_->Draw(viewProjection_);
+	//floor_->Draw(viewProjection_);
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 

@@ -38,21 +38,32 @@ void RailCamera::Update(){
 	ImGui::Text(
 	    "rotate %f  %f  %f", worldTransform_.rotation_.x, worldTransform_.rotation_.y,worldTransform_.rotation_.z
 	);
+	ImGui::Text(
+		"rotate %f  %f  %f", viewProjection_.rotation_.x, viewProjection_.rotation_.y,viewProjection_.rotation_.z
+	);
 	ImGui::End();
 
 	// 座標移動（ベクトルの加算）
 	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, move);
 
 	// 回転速さ[ラジアン/frame]
-	const float kRotSpeed = 0.02f;
+	//const float kRotSpeed = 0.02f;
 
 	// 押した方向で移動ベクトルを変更
-	if (input_->PushKey(DIK_A)) {
+	/*if (input_->PushKey(DIK_A)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
 		worldTransform_.rotation_.y += kRotSpeed;
-	}
+	}*/
 	
+	XINPUT_STATE joyState1;
+
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
+		worldTransform_.rotation_.y += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 0.02f;
+	
+	}
+
 	//.UpdateMatrix();
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_,worldTransform_.rotation_,worldTransform_.translation_);
 

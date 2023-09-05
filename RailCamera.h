@@ -3,6 +3,11 @@
 #include <ViewProjection.h>
 #include <WorldTransform.h>
 #include <input.h>
+
+#include "Player.h"
+
+class Player;
+
 class RailCamera {
 public:
 	//~RailCamera();

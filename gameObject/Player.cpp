@@ -47,7 +47,7 @@ void Player::Update(ViewProjection viewProjection) {
 	worldTransform3DReticle_.TransferMatrix();
 
 	// キャラクターの移動ベクトル
-	Vector3 move = {0, 0, 0};
+	Vector3 move = {0, 0, 0.1f};
 
 	// キャラクターの移動速さ
 	const float kCharacterSpeed = 0.2f;
@@ -74,6 +74,13 @@ void Player::Update(ViewProjection viewProjection) {
 
 			move.y -= kCharacterSpeed;
 		}
+
+		//速度ベクトルを自機の向きに合わせて回転させる
+		move = TransformNormal(move, worldTransform_.matWorld_);
+
+		worldTransform_.translation_.x += move.x;
+		worldTransform_.translation_.y += move.y;
+		worldTransform_.translation_.z += move.z;
 
 		// ゲームパッドの状態を得る変数（XINPUT）
 		XINPUT_STATE joyState;
@@ -216,10 +223,10 @@ void Player::Update(ViewProjection viewProjection) {
 
 		// ジョイスティック状態取得
 		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
-			spritePosition.x += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
-			spritePosition.y -= (float)joyState1.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
+			//spritePosition.x += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
+			//spritePosition.y -= (float)joyState1.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
 			// スプライトの座標変更を繁栄
-			sprite2DReticle_->SetPosition(spritePosition);
+			//sprite2DReticle_->SetPosition(spritePosition);
 		}
 		/*--------合成行列の逆行列--------------*/
 		// ビュープロジェクションビューポート合成行列

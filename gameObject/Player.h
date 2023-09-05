@@ -69,6 +69,8 @@ public:
 	void DrawUI();
 
 
+	WorldTransform GetworldTransform() { return worldTransform_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
