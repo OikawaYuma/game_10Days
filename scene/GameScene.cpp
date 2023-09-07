@@ -44,6 +44,7 @@ void GameScene::Initialize() {
 	// レールカメラの初期化
 	railCamera_->Initialize({ 0, 0, 0 }, { 0, 0, 0 });
 
+	player_->SetViewProjection(&railCamera_->GetViewProjection());
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
@@ -108,7 +109,7 @@ void GameScene::Update() {
 	// player_->SetParent(&railCamera_->GetWorldTransform());
 	//  自キャラとレールカメラの親子関係を結ぶ
 
-	// 自キャラの更新あ
+	// 自キャラの更新
 	player_->Update(viewProjection_);
 
 	// 敵キャラの更新

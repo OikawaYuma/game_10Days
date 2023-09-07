@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "PlayerBullet.h"
 #include "WorldTransform.h"
+#include <ViewProjection.h>
 #include <cassert>
 #include <input.h>
 #include <list>
@@ -71,6 +72,10 @@ public:
 
 	//WorldTransform GetworldTransform() { return worldTransform_; }
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		viewProjection_ = viewProjection;
+	}
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
@@ -91,5 +96,8 @@ private:
 
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
+
+	//カメラのビュープロジェクション
+	const ViewProjection* viewProjection_ = nullptr;
 
 };

@@ -78,6 +78,12 @@ void Player::Update(ViewProjection viewProjection) {
 		//速度ベクトルを自機の向きに合わせて回転させる
 		move = TransformNormal(move, worldTransform_.matWorld_);
 
+		//移動料に速さを反映(０度の移動ベクトル)
+		move = Normalize(move);
+		move.x *= kCharacterSpeed;
+		move.y *= kCharacterSpeed;
+		move.z *= kCharacterSpeed;
+
 		worldTransform_.translation_.x += move.x;
 		worldTransform_.translation_.y += move.y;
 		worldTransform_.translation_.z += move.z;
