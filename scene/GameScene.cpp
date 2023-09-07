@@ -31,31 +31,24 @@ void GameScene::Initialize() {
 
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	// レールカメラの生成
-	railCamera_ = new RailCamera;
-	// レールカメラの初期化
-	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
 
 	// 自キャラの生成
 	player_ = new Player();
 
 	// pos設定
-	Vector3 playerPos = {0, 0, 60};
+	Vector3 playerPos = {0, 0, -60};
 	// 自キャラの初期化
 	player_->Initialize(model_, playerTh_, playerPos);
 
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 	LoadEnemyPopData();
-	// 敵弾の生成
-	// EnemyBullet* newBullet = new EnemyBullet;
-	// newBullet->Initialize(model_, enemy_->GetTranslation(), newBullet->GetVelo());
 
 	// 天球の生成
 	skydome_ = new Skydome;
 
 	// 床の生成
-	floor_ = new Floor;
+	//floor_ = new Floor;
 
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
@@ -67,7 +60,12 @@ void GameScene::Initialize() {
 	skydome_->Initialize(modelSkydome_);
 
 	// 床の初期化
-	floor_->Initialize(modelFloor_);
+	//floor_->Initialize(modelFloor_);
+
+	// レールカメラの生成
+	railCamera_ = new RailCamera;
+	// レールカメラの初期化
+	railCamera_->Initialize({0, 0, -300}, {0, 0, 0});
 
 	// デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -91,18 +89,18 @@ void GameScene::Update() {
 	});
 
 	// デスフラグの立った弾を削除
-	enemys_.remove_if([](Enemy* enemy) {
+	/*enemys_.remove_if([](Enemy* enemy) {
 		if (!enemy->GetIsAlive()) {
 			delete enemy;
 			return true;
 		}
 		return false;
-	});
+	});*/
 
 	UpdateEnemyPopCommands();
 
 	skydome_->Update();
-	floor_->Update();
+	//floor_->Update();
 	// player_->SetParent(&railCamera_->GetWorldTransform());
 	//  自キャラとレールカメラの親子関係を結ぶ
 
@@ -113,10 +111,10 @@ void GameScene::Update() {
 	for (Enemy* enemy : enemys_) {
 		enemy->Update();
 
-		ImGui::Begin("Debug5");
+		/*ImGui::Begin("Debug5");
 		ImGui::Text("bullet :%d", enemy->GetShotTimer());
-		ImGui::End();
-		// enemy->Fire();
+		ImGui::End();*/
+		//enemy->Fire();
 		if (enemy->GetShotTimer() >= enemy->kFireInterval) {
 			assert(player_);
 			// 弾の速度
@@ -185,11 +183,7 @@ void GameScene::Update() {
 		// ビュープロジェクション行列の更新と転送
 		// viewProjection_.UpdateMatrix();
 	}
-	/*float a = player_->GetParent()->parent_->matWorld_.m[3][2];
-	float b = player_->GetWorldPosition().z;
-	ImGui::Begin("Debug2");
-	ImGui::Text("%f  ,  %f", a,b);
-	ImGui::End();*/
+	
 }
 
 void GameScene::Draw() {
@@ -221,12 +215,11 @@ void GameScene::Draw() {
 	/// </summary>
 	skydome_->Draw(viewProjection_);
 
-	floor_->Draw(viewProjection_);
+	//floor_->Draw(viewProjection_);
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
 	// 敵キャラの描画
-	// 敵弾の描画
 	for (Enemy* enemy : enemys_) {
 		enemy->Draw(viewProjection_);
 	}
@@ -243,7 +236,7 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-	player_->DrawUI();
+	//player_->DrawUI();
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>

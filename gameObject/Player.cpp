@@ -50,7 +50,23 @@ void Player::Update(ViewProjection viewProjection) {
 	Vector3 move = {0, 0, 0};
 
 	// キャラクターの移動速さ
-	const float kCharacterSpeed = 0.2f;
+	const float kCharacterSpeed = 0.5f;
+
+	// キャラの移動
+	Vector3 kVelocity(0, 0, kCharacterSpeed);
+
+	kVelocity = Normalize(kVelocity);
+	kVelocity.x *= kCharacterSpeed;
+	kVelocity.y *= kCharacterSpeed;
+	kVelocity.z *= kCharacterSpeed;
+
+	kVelocity = TransformNormal(kVelocity, worldTransform_.matWorld_);
+
+	
+	move.x += kVelocity.x;
+	move.y += kVelocity.y;
+	move.z += kVelocity.z;
+	
 
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -65,14 +81,13 @@ void Player::Update(ViewProjection viewProjection) {
 		if (input_->PushKey(DIK_LEFT)) {
 			move.x -= kCharacterSpeed;
 		} else if (input_->PushKey(DIK_RIGHT)) {
-
 			move.x += kCharacterSpeed;
 		}
 		if (input_->PushKey(DIK_UP)) {
-			move.y += kCharacterSpeed;
+			move.z += kCharacterSpeed;
 		} else if (input_->PushKey(DIK_DOWN)) {
 
-			move.y -= kCharacterSpeed;
+			move.z -= kCharacterSpeed;
 		}
 
 		// ゲームパッドの状態を得る変数（XINPUT）
@@ -89,16 +104,16 @@ void Player::Update(ViewProjection viewProjection) {
 
 		// キーボード入力による移動処理
 
-		// 移動限界座標
-		const float kMoveLimitX = 50;
-		const float kMoveLimitY = 30;
+		//// 移動限界座標
+		//const float kMoveLimitX = 50;
+		//const float kMoveLimitY = 30;
 
-		// 範囲を超えない処理
-		worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
-		worldTransform_.translation_.x = min(worldTransform_.translation_.x, kMoveLimitX);
+		//// 範囲を超えない処理
+		//worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
+		//worldTransform_.translation_.x = min(worldTransform_.translation_.x, kMoveLimitX);
 
-		worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
-		worldTransform_.translation_.y = min(worldTransform_.translation_.y, kMoveLimitY);
+		//worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
+		//worldTransform_.translation_.y = min(worldTransform_.translation_.y, kMoveLimitY);
 
 		// 回転速さ[ラジアン/frame]
 		const float kRotSpeed = 0.02f;
@@ -108,6 +123,12 @@ void Player::Update(ViewProjection viewProjection) {
 			worldTransform_.rotation_.y -= kRotSpeed;
 		} else if (input_->PushKey(DIK_D)) {
 			worldTransform_.rotation_.y += kRotSpeed;
+		}
+
+		if (input_->PushKey(DIK_W)) {
+			worldTransform_.rotation_.x -= kRotSpeed;
+		} else if (input_->PushKey(DIK_S)) {
+			worldTransform_.rotation_.x += kRotSpeed;
 		}
 
 		worldTransform_.UpdateMatrix();
@@ -266,9 +287,9 @@ void Player::Update(ViewProjection viewProjection) {
 		ImGui::End();
 	}
 
-	ImGui::Begin("Debug1");
+	/*ImGui::Begin("Debug1");
 	ImGui::Text("%f", worldTransform_.matWorld_.m[3][2]);
-	ImGui::End();
+	ImGui::End();*/
 
 	// キャラクター攻撃処理
 	Attack();

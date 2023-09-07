@@ -10,6 +10,7 @@ void Enemy::Initialize(Vector3 translation) {
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	
+	worldTransform_.scale_ = {30.0f, 30.0f, 30.0f};
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
@@ -23,7 +24,7 @@ void Enemy::Initialize(Vector3 translation) {
 }
 
 void Enemy::Update() { state->Update(this); 
-survivalTimer++;
+    survivalTimer++;
 	shotIntervalTimer_++;
 
 if (deadTime <= survivalTimer) {
@@ -33,59 +34,16 @@ if (deadTime <= survivalTimer) {
 
 worldTransform_.UpdateMatrix();
 
-// デスフラグの立った弾を削除
-//bullets_.remove_if([](EnemyBullet* bullet) {
-//	if (bullet->GetIsDead()) {
-//		delete bullet;
-//		return true;
-//	}
-//	return false;
-//});
-
-//Fire();
-
-
- /*if (bullets_) {
-	if (bullet_->GetIsDead()) {
-		delete bullet_;
-		bullet_ = nullptr;
-		
-	} else {
-
-		bullet_->Update();
-	}
-	 
- }*/
-
 
 }
 
 void Enemy::Draw(ViewProjection viewProjection_) {
 	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
-	/*if (bullet) {
-	bullet->Draw(viewProjection_);
-	}*/
 	
 }
 void Enemy::Move() {
 	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, velocity_);
 }
-
-
-
-//
-// void Enemy::MoveApproach() {
-//	velocity_.z = -0.2f;
-//	if (worldTransform_.translation_.z < 0.0f) {
-//		phase_ = Phase::Leave;
-//	}
-//}
-// void Enemy::MoveLeave() {
-//	velocity_.z = 0;
-//	velocity_.x = -0.2f;
-//	velocity_.y = +0.2f;
-//
-//}
 
 // setter
 //  setter
@@ -106,7 +64,7 @@ void Enemy::ChangeState(BaseEnemyState* newState) { state = newState; }
 
 void EnemyStateApoorch::Update(Enemy* pEnemy) {
 
-	pEnemy->SetVelo({0, 0, -0.4f});
+	pEnemy->SetVelo({0, 0, 0});
 	pEnemy->Move();
 	//pEnemy->SetShotInterval(0);
 
@@ -129,61 +87,61 @@ void EnemyStateApoorch::Update(Enemy* pEnemy) {
 }
 
 void EnemyStateLeave::Update(Enemy* pEnemy) {
-	pEnemy->SetVelo({-0.2f, 0.2f, -2.2f});
+	pEnemy->SetVelo({0, 0, 0});
 	pEnemy->Move();
 	
 }
 
 
 
-void Enemy::Fire() { 
-	if (++shotIntervalTimer_ >= kFireInterval) {
-		
-		// 弾があれば破棄する
-		/*if (bullet_) {
-
-		    delete bullet_;
-		    bullet_ = nullptr;
-		}*/
-		assert(player_);
-		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		
-		Vector3 start = GetWorldPosition();
-		Vector3 end = player_->GetWorldPosition();
-		
-		Vector3 diffVector;
-		diffVector.x = end.x - start.x;
-		diffVector.y = end.y - start.y;
-		diffVector.z = end.z - start.z;
-		
-		diffVector = Normalize(diffVector);
-		diffVector.x *= kBulletSpeed;
-		diffVector.y *= kBulletSpeed;
-		diffVector.z *= kBulletSpeed;
-
-		Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
-		ImGui::Begin("Debug5");
-		ImGui::Text("bullet :%f\n:%f\n:%f\n", diffVector.x, diffVector.y, diffVector.z);
-		ImGui::End();
-		// 速度ベクトルを自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
-
-		// 弾を生成し、初期化
-		EnemyBullet* newBullet = new EnemyBullet();
-		newBullet->SetPlayer(player_);
-		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
-
-		// 弾を登録する
-		gameScene_->AddEnemyBullet(newBullet);
-		shotIntervalTimer_ = 0;
-
-	}
-	ImGui::Begin("Debug4");
-	ImGui::Text("bullet :%d\n", shotIntervalTimer_);
-	
-	ImGui::End();
-}
+//void Enemy::Fire() { 
+//	if (++shotIntervalTimer_ >= kFireInterval) {
+//		
+//		// 弾があれば破棄する
+//		/*if (bullet_) {
+//
+//		    delete bullet_;
+//		    bullet_ = nullptr;
+//		}*/
+//		assert(player_);
+//		// 弾の速度
+//		const float kBulletSpeed = 1.0f;
+//		
+//		Vector3 start = GetWorldPosition();
+//		Vector3 end = player_->GetWorldPosition();
+//		
+//		Vector3 diffVector;
+//		diffVector.x = end.x - start.x;
+//		diffVector.y = end.y - start.y;
+//		diffVector.z = end.z - start.z;
+//		
+//		diffVector = Normalize(diffVector);
+//		diffVector.x *= kBulletSpeed;
+//		diffVector.y *= kBulletSpeed;
+//		diffVector.z *= kBulletSpeed;
+//
+//		Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
+//		/*ImGui::Begin("Debug5");
+//		ImGui::Text("bullet :%f\n:%f\n:%f\n", diffVector.x, diffVector.y, diffVector.z);
+//		ImGui::End();*/
+//		// 速度ベクトルを自機の向きに合わせて回転させる
+//		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+//
+//		// 弾を生成し、初期化
+//		EnemyBullet* newBullet = new EnemyBullet();
+//		newBullet->SetPlayer(player_);
+//		newBullet->Initialize(model_, worldTransform_.translation_, velocity);
+//
+//		// 弾を登録する
+//		gameScene_->AddEnemyBullet(newBullet);
+//		shotIntervalTimer_ = 0;
+//
+//	}
+//	/*ImGui::Begin("Debug4");
+//	ImGui::Text("bullet :%d\n", shotIntervalTimer_);
+//	
+//	ImGui::End();*/
+//}
 
 Vector3 Enemy::GetWorldPosition() {
 	// ワールド行列座標を入れる変数

@@ -44,14 +44,30 @@ void RailCamera::Update(){
 	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, move);
 
 	// 回転速さ[ラジアン/frame]
-	const float kRotSpeed = 0.02f;
+	//const float kRotSpeed = 0.02f;
+
+	// キャラクターの移動速さ
+	const float kCharacterSpeed = 0.5f;
+
+	// 押した方向で移動ベクトルを変更（左右）
+	if (input_->PushKey(DIK_LEFT)) {
+		worldTransform_.translation_.x -= kCharacterSpeed;
+	} else if (input_->PushKey(DIK_RIGHT)) {
+		worldTransform_.translation_.x += kCharacterSpeed;
+	}
+	if (input_->PushKey(DIK_UP)) {
+		worldTransform_.translation_.z += kCharacterSpeed;
+	} else if (input_->PushKey(DIK_DOWN)) {
+
+		worldTransform_.translation_.z -= kCharacterSpeed;
+	}
 
 	// 押した方向で移動ベクトルを変更
-	if (input_->PushKey(DIK_A)) {
+	/*if (input_->PushKey(DIK_A)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
 		worldTransform_.rotation_.y += kRotSpeed;
-	}
+	}*/
 	
 	//.UpdateMatrix();
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_,worldTransform_.rotation_,worldTransform_.translation_);
