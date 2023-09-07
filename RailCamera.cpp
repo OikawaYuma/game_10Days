@@ -86,11 +86,7 @@ void RailCamera::Update(WorldTransform playerWorldTransform_){
 	//move_ = TransformNormal(move_, worldTransform_.matWorld_);
 	XINPUT_STATE joyState1;
 
-	// ジョイスティック状態取得
-	if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
-		worldTransform_.translation_.x += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 0.02f;
 	
-	}
 
 	//.UpdateMatrix();
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_,worldTransform_.rotation_,worldTransform_.translation_);
