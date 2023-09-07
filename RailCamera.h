@@ -4,9 +4,7 @@
 #include <WorldTransform.h>
 #include <input.h>
 
-#include "Player.h"
 
-class Player;
 
 class RailCamera {
 public:
@@ -20,7 +18,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(WorldTransform playerWorldTransform_);
 
 	const ViewProjection& GetViewProjection() { return viewProjection_; };
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
@@ -34,5 +32,5 @@ private:
 	// キーボード入力
 	Input* input_ = nullptr;
 
-	Vector3 move;
+	Vector3 move_ = { 0,0,0.1f };
 };

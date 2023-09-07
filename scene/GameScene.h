@@ -9,17 +9,17 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
-#include"function.h"
-#include<list>
+#include "function.h"
+#include <list>
 
 #include "Player.h"
-#include"Enemy.h"
-#include"EnemyBullet.h"
-#include"Skydome.h"
+#include "Enemy.h"
+#include "EnemyBullet.h"
+#include "Skydome.h"
 #include "Floor.h"
-#include"RailCamera.h"
+#include "RailCamera.h"
 
-#include<sstream>
+#include <sstream>
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -126,6 +126,7 @@ private: // メンバ変数
 
 	//	レールカメラ
 	RailCamera* railCamera_ = nullptr;
+
 
 	// 3Dモデル
 	Model* modelSkydome_ = nullptr;

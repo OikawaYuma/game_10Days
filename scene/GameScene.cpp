@@ -27,25 +27,27 @@ void GameScene::Initialize() {
 	// レティクルのテクスチャ
 	TextureManager::Load("Reticle.png");
 	playerTh_ = TextureManager::Load("PLAYER.png");
-	sprite_ = Sprite::Create(playerTh_, {100, 50});
+	sprite_ = Sprite::Create(playerTh_, { 100, 50 });
 
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	// レールカメラの生成
-	railCamera_ = new RailCamera;
-	// レールカメラの初期化
-	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
 
 	// 自キャラの生成
 	player_ = new Player();
 
 	// pos設定
-	Vector3 playerPos = {0, 0, 60};
+	Vector3 playerPos = { 0, 0, 60 };
 	// 自キャラの初期化
 	player_->Initialize(model_, playerTh_, playerPos);
+	// レールカメラの生成
+	railCamera_ = new RailCamera;
+	// レールカメラの初期化
+	railCamera_->Initialize({ 0, 0, 0 }, { 0, 0, 0 });
 
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
+
+
 	LoadEnemyPopData();
 	// 敵弾の生成
 	// EnemyBullet* newBullet = new EnemyBullet;
@@ -80,7 +82,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	railCamera_->Update();
+
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->GetIsDead()) {
@@ -88,7 +90,7 @@ void GameScene::Update() {
 			return true;
 		}
 		return false;
-	});
+		});
 
 	// デスフラグの立った弾を削除
 	enemys_.remove_if([](Enemy* enemy) {
@@ -97,7 +99,7 @@ void GameScene::Update() {
 			return true;
 		}
 		return false;
-	});
+		});
 
 	UpdateEnemyPopCommands();
 
@@ -163,10 +165,9 @@ void GameScene::Update() {
 	}
 	else {
 		isDebugCameraActive_ = false;
-
 	}
 #endif
-	
+	railCamera_->Update(player_->GetWorldTransform());
 
 	viewProjection_.matView = railCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
@@ -184,7 +185,8 @@ void GameScene::Update() {
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
-	} else {
+	}
+	else {
 
 		// ビュープロジェクション行列の更新と転送
 		// viewProjection_.UpdateMatrix();
@@ -225,7 +227,7 @@ void GameScene::Draw() {
 	/// </summary>
 	skydome_->Draw(viewProjection_);
 
-	//floor_->Draw(viewProjection_);
+	floor_->Draw(viewProjection_);
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
@@ -281,7 +283,7 @@ void GameScene::CheckAllCollision() {
 		// 敵弾の座標
 		posB = bullet->GetWorldPosition();
 		float p2b = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) +
-		            (posB.z - posA.z) * (posB.z - posA.z);
+			(posB.z - posA.z) * (posB.z - posA.z);
 		radiusB = bullet->GetRadius();
 		int r2r = (radiusA + radiusB) * (radiusA + radiusB);
 
@@ -307,8 +309,8 @@ void GameScene::CheckAllCollision() {
 
 			posB = bullet->GetWorldPosition();
 			float e2b = (posB.x - posA.x) * (posB.x - posA.x) +
-			            (posB.y - posA.y) * (posB.y - posA.y) +
-			            (posB.z - posA.z) * (posB.z - posA.z);
+				(posB.y - posA.y) * (posB.y - posA.y) +
+				(posB.z - posA.z) * (posB.z - posA.z);
 			radiusB = bullet->GetRadius();
 			int r2r = (radiusA + radiusB) * (radiusA + radiusB);
 
@@ -336,8 +338,8 @@ void GameScene::CheckAllCollision() {
 			posB = bulletB->GetWorldPosition();
 			radiusB = bulletB->GetRadius();
 			float a2b = (posB.x - posA.x) * (posB.x - posA.x) +
-			            (posB.y - posA.y) * (posB.y - posA.y) +
-			            (posB.z - posA.z) * (posB.z - posA.z);
+				(posB.y - posA.y) * (posB.y - posA.y) +
+				(posB.z - posA.z) * (posB.z - posA.z);
 
 			int r2r = (radiusA + radiusB) * (radiusA + radiusB);
 
@@ -415,7 +417,7 @@ void GameScene::UpdateEnemyPopCommands() {
 			float z = (float)std::atof(word.c_str());
 
 			// 敵を発生させる
-			enemyAppear({x, y, z});
+			enemyAppear({ x, y, z });
 
 		}
 		// WAITコマンド
@@ -438,7 +440,7 @@ void GameScene::UpdateEnemyPopCommands() {
 }
 
 // 敵の出現
-void GameScene::enemyAppear(Vector3 translation){
+void GameScene::enemyAppear(Vector3 translation) {
 	// 敵キャラの生成
 	Enemy* newEnemy = new Enemy();
 	// 敵キャラの初期化

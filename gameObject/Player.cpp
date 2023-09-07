@@ -47,7 +47,7 @@ void Player::Update(ViewProjection viewProjection) {
 	worldTransform3DReticle_.TransferMatrix();
 
 	// キャラクターの移動ベクトル
-	Vector3 move = {0, 0, 0.1f};
+	Vector3 move = {0, 0, 0};
 
 	// キャラクターの移動速さ
 	const float kCharacterSpeed = 0.2f;

@@ -69,8 +69,8 @@ public:
 	void DrawUI();
 
 
-	WorldTransform GetworldTransform() { return worldTransform_; }
-
+	//WorldTransform GetworldTransform() { return worldTransform_; }
+	const WorldTransform& GetWorldTransform() { return worldTransform_; };
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
