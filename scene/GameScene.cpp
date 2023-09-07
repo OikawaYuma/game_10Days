@@ -42,12 +42,12 @@ void GameScene::Initialize() {
 	// レールカメラの生成
 	railCamera_ = new RailCamera;
 	// レールカメラの初期化
-	railCamera_->Initialize({ 0, 0, 0 }, { 0, 0, 0 });
+	railCamera_->Initialize();
 
 	player_->SetViewProjection(&railCamera_->GetViewProjection());
 	// 自キャラとレールカメラの親子関係を結ぶ
-	player_->SetParent(&railCamera_->GetWorldTransform());
-
+	//player_->SetParent(&railCamera_->GetWorldTransform());
+	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
 
 	LoadEnemyPopData();
 	// 敵弾の生成
@@ -168,7 +168,7 @@ void GameScene::Update() {
 		isDebugCameraActive_ = false;
 	}
 #endif
-	railCamera_->Update(player_->GetWorldTransform());
+	railCamera_->Update();
 
 	viewProjection_.matView = railCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
@@ -228,7 +228,7 @@ void GameScene::Draw() {
 	/// </summary>
 	skydome_->Draw(viewProjection_);
 
-	floor_->Draw(viewProjection_);
+	//floor_->Draw(viewProjection_);
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
@@ -250,7 +250,7 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-	player_->DrawUI();
+	//player_->DrawUI();
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>

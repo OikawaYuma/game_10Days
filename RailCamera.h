@@ -3,7 +3,7 @@
 #include <ViewProjection.h>
 #include <WorldTransform.h>
 #include <input.h>
-
+#include "function.h"
 
 
 class RailCamera {
@@ -13,24 +13,26 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Vector3 pos, Vector3 rot);
+	void Initialize();
 
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update(WorldTransform playerWorldTransform_);
+	void Update();
 
 	const ViewProjection& GetViewProjection() { return viewProjection_; };
-	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+	//const WorldTransform& GetWorldTransform() { return worldTransform_; };
+
+	void SetworldTransform_(const WorldTransform* target) {  target_= target; }
 
 private:
 	// ワールド変換データ
-	WorldTransform worldTransform_;
+	const WorldTransform* target_ = nullptr;
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
 	// キーボード入力
 	Input* input_ = nullptr;
 
-	Vector3 move_ = { 0,0,0.1f };
+	Vector3 move = { 0,0,0.0 };
 };
