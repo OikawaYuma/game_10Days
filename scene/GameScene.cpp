@@ -26,7 +26,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	// レティクルのテクスチャ
 	TextureManager::Load("Reticle.png");
-	playerTh_ = TextureManager::Load("PLAYER.png");
+	playerTh_ = TextureManager::Load("white1x1.png");
 	sprite_ = Sprite::Create(playerTh_, {100, 50});
 
 	// 3Dモデルの生成
@@ -220,9 +220,9 @@ void GameScene::Draw() {
 	player_->Draw(viewProjection_);
 
 	// 敵キャラの描画
-	for (Enemy* enemy : enemys_) {
+	/*for (Enemy* enemy : enemys_) {
 		enemy->Draw(viewProjection_);
-	}
+	}*/
 
 	// 敵弾の描画
 	for (EnemyBullet* bullet : enemyBullets_) {
