@@ -46,8 +46,8 @@ void GameScene::Initialize() {
 
 	player_->SetViewProjection(&railCamera_->GetViewProjection());
 	// 自キャラとレールカメラの親子関係を結ぶ
-	//player_->SetParent(&railCamera_->GetWorldTransform());
-	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
+	player_->SetParent(&railCamera_->GetWorldTransform());
+	//railCamera_->SetworldTransform_(&player_->GetWorldTransform());
 
 	LoadEnemyPopData();
 	// 敵弾の生成

@@ -132,27 +132,27 @@ void Player::Update(ViewProjection viewProjection) {
 		// 押した方向で移動ベクトルを変更
 		if (input_->PushKey(DIK_A)) {
 			worldTransform_.rotation_.y -= kRotSpeed;
-			CameraworldTransform_.rotation_.y -= kRotSpeed;
 		}
 		else if (input_->PushKey(DIK_D)) {
 			worldTransform_.rotation_.y += kRotSpeed;
-			CameraworldTransform_.rotation_.y += kRotSpeed;
-
 		}
 
 		if (input_->PushKey(DIK_W)) {
 			worldTransform_.rotation_.x -= kRotSpeed;
-			CameraworldTransform_.rotation_.x -= kRotSpeed;
-
 		}
 		else if (input_->PushKey(DIK_S)) {
 			worldTransform_.rotation_.x += kRotSpeed;
-			CameraworldTransform_.rotation_.x -= kRotSpeed;
-
 		}
+		XINPUT_STATE joyState1;
 
+		// ジョイスティック状態取得
+		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
+			worldTransform_.rotation_.y += (float)joyState1.Gamepad.sThumbLX / SHRT_MAX * kRotSpeed;
+			worldTransform_.rotation_.x -= (float)joyState1.Gamepad.sThumbLY / SHRT_MAX * kRotSpeed;
+		}
 		worldTransform_.UpdateMatrix();
 	}
+
 
 	// 自機のワールド座標から3Dレティクルのワールド座標を計算
 	{
@@ -241,7 +241,7 @@ void Player::Update(ViewProjection viewProjection) {
 		// ImGui::Begin("Player");
 		// ImGui::Text("2DReticle:(%2.2f,%2.2f)", mousePosition.x, mousePosition.y);
 		// ImGui::Text("Near:(%2.2f,%2.2f)", posNear.x, posNear.y);
-		// ImGui::Text("Far:(%2.2f,%2.2f)", posFar.x, posFar.y);
+		// ImGui::Text(hmj"Far:(%2.2f,%2.2f)", posFar.x, posFar.y);
 		// ImGui::Text(
 		//     "3DReticle:(%2.2f,%2.2f,%2.2f)", worldTransform3DReticle_.translation_.x,
 		//     worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
@@ -258,8 +258,8 @@ void Player::Update(ViewProjection viewProjection) {
 
 		// ジョイスティック状態取得
 		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
-			spritePosition.x += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
-			spritePosition.y -= (float)joyState1.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
+			//spritePosition.x += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
+			//spritePosition.y -= (float)joyState1.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
 			// スプライトの座標変更を繁栄
 			sprite2DReticle_->SetPosition(spritePosition);
 		}
@@ -305,9 +305,8 @@ void Player::Update(ViewProjection viewProjection) {
 		ImGui::Text(
 			" player : (% 2.2f,%2.2f,%2.2f)", worldTransform_.translation_.x,
 			worldTransform_.translation_.y, worldTransform_.translation_.z);
-		ImGui::Text(
-			" player : (% 2.2f,%2.2f,%2.2f)", CameraworldTransform_.translation_.x,
-			CameraworldTransform_.translation_.y, CameraworldTransform_.translation_.z);
+		ImGui::Text("rotation:(%f,%f,%f)", worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
+
 		ImGui::End();
 
 		
