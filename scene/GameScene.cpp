@@ -65,7 +65,7 @@ void GameScene::Initialize() {
 	// レールカメラの生成
 	railCamera_ = new RailCamera;
 	// レールカメラの初期化
-	railCamera_->Initialize({0, 0, -300}, {0, 0, 0});
+	railCamera_->Initialize(player_->GetWorldPosition(), {0, 0, 0});
 
 	// デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);

@@ -40,8 +40,23 @@ void RailCamera::Update(){
 	);
 	ImGui::End();
 
-	// 座標移動（ベクトルの加算）
-	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, move);
+	Vector3 offset = {0.0f, 6.0f, -30.0f};
+
+	// 追従対象があれば
+	if (target_) {
+		// 追従カメラまでのオフセット
+		// Vector3 offset = { 0.0f,6.0f,-30.0f };
+
+		// カメラの角度から回転行列を計算
+		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_.rotation_);
+		// オフセットをカメラの回転に合わせて回転
+		offset = TransformNormal(offset, rotateMatrix);
+
+		// 座標をコピーしてオフセット分ずらす
+		viewProjection_.translation_.x = target_->translation_.x + offset.x;
+		viewProjection_.translation_.y = target_->translation_.y + offset.y;
+		viewProjection_.translation_.z = target_->translation_.z + offset.z;
+	}
 
 	// 回転速さ[ラジアン/frame]
 	//const float kRotSpeed = 0.02f;

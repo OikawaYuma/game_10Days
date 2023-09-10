@@ -3,6 +3,7 @@
 #include <ViewProjection.h>
 #include <WorldTransform.h>
 #include <input.h>
+
 class RailCamera {
 public:
 	//~RailCamera();
@@ -30,4 +31,7 @@ private:
 	Input* input_ = nullptr;
 
 	Vector3 move;
+
+	// ワールド変換データ
+	const WorldTransform* target_ = nullptr;
 };

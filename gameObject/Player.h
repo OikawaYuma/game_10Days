@@ -68,10 +68,19 @@ public:
 	/// </summary>
 	void DrawUI();
 
+	const WorldTransform& GetWorldTransform() { return worldTransform_; };
+
+	const WorldTransform& GetCameraWorldTransform() { return CameraworldTransform_; };
+
+	void SetViewProjection(const ViewProjection* viewProjection) {
+		IviewProjection_ = viewProjection;
+	}
 
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
+	WorldTransform CameraworldTransform_;
+
 	// モデル
 	Model* model_ = nullptr;
 	// テクスチャハンドル
@@ -89,5 +98,7 @@ private:
 
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
+
+	const ViewProjection* IviewProjection_ = nullptr;
 
 };

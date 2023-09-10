@@ -25,6 +25,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 	worldTransform_.translation_ = pos;
 	worldTransform_.UpdateMatrix();
 
+	CameraworldTransform_.Initialize();
+
 	// 3Dレティクルのワールドトラベル初期化
 	worldTransform3DReticle_.Initialize();
 
@@ -37,6 +39,10 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+
+	CameraworldTransform_.translation_.x = worldTransform_.translation_.x;
+	CameraworldTransform_.translation_.y = worldTransform_.translation_.y + 5;
+	CameraworldTransform_.translation_.z = worldTransform_.translation_.z - 10;
 }
 
 Vector3 Player::Rotate(Vector3 rot) { return rot; };
@@ -45,6 +51,9 @@ void Player::Update(ViewProjection viewProjection) {
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
 	worldTransform3DReticle_.TransferMatrix();
+
+	CameraworldTransform_.TransferMatrix();
+	CameraworldTransform_.UpdateMatrix();
 
 	// キャラクターの移動ベクトル
 	Vector3 move = {0, 0, 0};
