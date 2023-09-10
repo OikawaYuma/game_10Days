@@ -32,13 +32,12 @@ void GameScene::Initialize() {
 
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	
 
 	// 自キャラの生成
 	player_ = new Player();
-
+	
 	// pos設定
-	Vector3 playerPos = {0, 0, 60};
+	Vector3 playerPos = {0, 0, -300};
 	// 自キャラの初期化
 	player_->Initialize(model_, playerTh_, playerPos);
 	// レールカメラの生成
@@ -49,7 +48,7 @@ void GameScene::Initialize() {
 	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
 
 	// 自キャラとレールカメラの親子関係を結ぶ
-	//player_->SetParent(&railCamera_->GetWorldTransform());
+	// player_->SetParent(&railCamera_->GetWorldTransform());
 	LoadEnemyPopData();
 	// 敵弾の生成
 	// EnemyBullet* newBullet = new EnemyBullet;
@@ -84,7 +83,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	
+
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->GetIsDead()) {
@@ -103,6 +102,15 @@ void GameScene::Update() {
 		return false;
 	});
 
+	// デスフラグが立った落ちてる体を削除
+	drapBodys_.remove_if([](DrapBody* dropBody) {
+		if (!dropBody->GetIsAlive()) {
+			delete dropBody;
+			return true;
+		}
+		return false;
+	});
+
 	UpdateEnemyPopCommands();
 
 	skydome_->Update();
@@ -114,21 +122,25 @@ void GameScene::Update() {
 	           DrapBody
 	------------------------------------------*/
 	DrapBodyAppearTimer_++;
-
+	
 	if (DrapBodyAppearTimer_ >= 50) {
 		DrapBody* newDrapBody = new DrapBody;
+		newDrapBody->SetPlayer(player_);
 		drapBodys_.push_back(newDrapBody);
-		Vector3 randDBodyPos = {};
-		newDrapBody->Initialize({30, 30, 30});
+		randBodyPosX_ = rand() % 300 - 150;
+		randBodyPosY_ = rand() % 300 - 150;
+		randBodyPosZ_ = rand() % 300 - 150;
+		Vector3 randDBodyPos = {(float)randBodyPosX_, (float)randBodyPosY_, (float)randBodyPosZ_};
+		newDrapBody->Initialize(randDBodyPos);
 
 		DrapBodyAppearTimer_ = 0;
-
 	}
-
-
-
-
-
+	for (DrapBody* drapBody : drapBodys_) {
+		ImGui::Begin("DrapBody");
+		ImGui::Text("DrapBodyT :%d", drapBody->GetWorldPosition().x);
+		ImGui::End();
+		drapBody->Update();
+	}
 	// 自キャラの更新あ
 	player_->Update(viewProjection_);
 
@@ -245,8 +257,8 @@ void GameScene::Draw() {
 	/// </summary>
 	skydome_->Draw(viewProjection_);
 
-	//floor_->Draw(viewProjection_);
-	// 自キャラの描画
+	// floor_->Draw(viewProjection_);
+	//  自キャラの描画
 	player_->Draw(viewProjection_);
 
 	// 敵キャラの描画
@@ -296,6 +308,11 @@ void GameScene::CheckAllCollision() {
 	// 敵弾リストの取得
 	const std::list<EnemyBullet*>& enemyBullets = Getbullet();
 
+	// 落ちている体の取得
+	const std::list<DrapBody*>& drapBody = GetDrapBody();
+
+
+
 #pragma region 自キャラと敵弾の当たり判定
 	// 自キャラの座標
 	posA = player_->GetWorldPosition();
@@ -314,6 +331,28 @@ void GameScene::CheckAllCollision() {
 			player_->OnCollision();
 			// 自キャラの衝突時コールバックを呼び出す
 			bullet->OnCollision();
+		}
+	}
+
+#pragma endregion
+#pragma region 自キャラと落ちている体の当たり判定
+	// 自キャラの座標
+	posA = player_->GetWorldPosition();
+	radiusA = player_->GetRadius();
+	// 自キャラと敵弾全ての当たり判定
+	for (DrapBody* drapBody1 : drapBody) {
+		// 敵弾の座標
+		posB = drapBody1->GetWorldPosition();
+		float p2b = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) +
+		            (posB.z - posA.z) * (posB.z - posA.z);
+		radiusB = drapBody1->GetRadius();
+		int r2r = (radiusA + radiusB) * (radiusA + radiusB);
+
+		if (p2b <= r2r) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision();
+			// 自キャラの衝突時コールバックを呼び出す
+			drapBody1->OnCollision();
 		}
 	}
 
@@ -395,6 +434,7 @@ void GameScene::CheckAllCollision() {
 		}
 	}
 
+
 }
 
 void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
@@ -421,7 +461,7 @@ void GameScene::UpdateEnemyPopCommands() {
 	if (isRespown) {
 		respownTimer_--;
 		if (respownTimer_ <= 0) {
-			//待機完了
+			// 待機完了
 			isRespown = false;
 		}
 		return;
@@ -466,7 +506,7 @@ void GameScene::UpdateEnemyPopCommands() {
 		else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
 
-			//待ち時間
+			// 待ち時間
 			int32_t waitTime = atoi(word.c_str());
 			// 待機開始
 			isRespown = true;
@@ -474,15 +514,12 @@ void GameScene::UpdateEnemyPopCommands() {
 
 			// コマンドループを抜ける
 			break;
-
 		}
-
-
 	}
 }
 
 // 敵の出現
-void GameScene::enemyAppear(Vector3 translation){
+void GameScene::enemyAppear(Vector3 translation) {
 	// 敵キャラの生成
 	Enemy* newEnemy = new Enemy();
 	// 敵キャラの初期化

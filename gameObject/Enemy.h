@@ -117,7 +117,7 @@ private:
 	int survivalTimer = 0;
 
 	// 死ぬ時間
-	const int deadTime = 1000;
+	const int deadTime = 10000;
 
 
 

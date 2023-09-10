@@ -49,7 +49,7 @@ Vector3 DrapBody::GetWorldPosition() {
 // 衝突を検出したらコールバック関数
 void DrapBody::OnCollision() {
 	isAlive = false; 
-	player_->Attack();
+	player_->Create();
 };
 
 

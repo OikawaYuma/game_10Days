@@ -10,7 +10,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& position, const Vector
 
 	model_ = model;
 	// テクスチャ読み込み
-	textureHandle_ = TextureManager::Load("Enemy.png");
+	textureHandle_ = TextureManager::Load("EnemyBullet.png");
 
 	// WorldTransformの初期化
 	worldTransform_.Initialize();
@@ -54,9 +54,9 @@ void EnemyBullet::Update() {
 	     worldTransform_.matWorld_.m[3][2]},
 	    t);
 
-	velocity_.x *= 0.7f;
-	velocity_.y *= 0.7f;
-	velocity_.z *= 0.7f;
+	velocity_.x *= 0.5f;
+	velocity_.y *= 0.5f;
+	velocity_.z *= 0.5f;
 
 	// Y軸周り角度（Θy）
 	worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);

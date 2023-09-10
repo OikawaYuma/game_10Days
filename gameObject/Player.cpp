@@ -241,7 +241,74 @@ void Player::Draw(ViewProjection viewProjection_) {
 	bullet_->Draw(viewProjection_);
 	}*/
 }
+void Player::Create(){
+	
+	{
+		// 弾があれば破棄する
+		/*if (bullet_) {
+		    delete bullet_;
+		    bullet_ = nullptr;
+		}*/
+		// 弾の速度
+		const float kBulletSpeed = 0.5f;
+		Vector3 velocity(0, 0, kBulletSpeed);
 
+		// 自機から照準オブジェクトへのベクトル
+		velocity.x = 0;
+		velocity.y = 0;
+		velocity.z = 0;
+
+		
+		// 弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+
+		// 弾を登録する
+		
+		newBullet->Initialize(
+		    model_, {GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - 10});
+		bullets_.push_back(newBullet);
+	}
+
+	// ゲームパッドを押したときの処理
+	XINPUT_STATE joyState;
+
+	// ゲームパッド未接続なら何もせず抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
+	// Rトリガーを押していたら
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+		// 弾があれば破棄する
+		/*if (bullet_) {
+		    delete bullet_;
+		    bullet_ = nullptr;
+		}*/
+		// 弾の速度
+		const float kBulletSpeed = 0.5f;
+		Vector3 velocity(0, 0, 0);
+
+		// 自機から照準オブジェクトへのベクトル
+		velocity.x = GetReticleWorldPosition().x - GetWorldPosition().x;
+		velocity.y = GetReticleWorldPosition().y - GetWorldPosition().y;
+		velocity.z = GetReticleWorldPosition().z - GetWorldPosition().z;
+
+		velocity = Normalize(velocity);
+		velocity.x *= kBulletSpeed;
+		velocity.y *= kBulletSpeed;
+		velocity.z *= kBulletSpeed;
+
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+		// 弾を生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, GetWorldPosition());
+
+		// 弾を登録する
+		bullets_.push_back(newBullet);
+	}
+};
 void Player::Attack() {
 	if (input_->TriggerKey(DIK_SPACE)) {
 

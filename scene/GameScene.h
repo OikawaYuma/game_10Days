@@ -72,6 +72,8 @@ public: // メンバ関数
 	const std::list<Enemy*>& GetEnemy() const { return enemys_; };
 		// 弾リストを取得
 	const std::list<EnemyBullet*>& Getbullet() const { return enemyBullets_; }
+
+	const std::list<DrapBody*>& GetDrapBody() const { return drapBodys_; }
 	/// <summary>
 	/// 敵発生データの読み込み
 	/// </summary>
@@ -119,7 +121,9 @@ private: // メンバ変数
 	//DrapBody 
 	DrapBody* drapBody_ = nullptr;
 	std::list<DrapBody*> drapBodys_;
-
+	int randBodyPosX_;
+	int randBodyPosY_;
+	int randBodyPosZ_;
 
 
 	// スポーンフラグ

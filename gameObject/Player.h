@@ -35,6 +35,8 @@ public:
 	/// </summary>
 	void Attack();
 
+	void Create();
+
 
 	/*----------------------------------
 	        Getter

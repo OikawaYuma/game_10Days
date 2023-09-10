@@ -106,7 +106,7 @@ void Enemy::ChangeState(BaseEnemyState* newState) { state = newState; }
 
 void EnemyStateApoorch::Update(Enemy* pEnemy) {
 
-	pEnemy->SetVelo({0, 0, -0.4f});
+	pEnemy->SetVelo({0, 0, 0});
 	pEnemy->Move();
 	//pEnemy->SetShotInterval(0);
 
