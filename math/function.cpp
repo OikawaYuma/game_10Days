@@ -128,6 +128,20 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 	m4.m[3][3] = 1;
 	return m4;
 };
+Matrix4x4 MakeRotateMatrix(const Vector3& radian) {
+	Matrix4x4 rotateX{};
+	Matrix4x4 rotateY{};
+	Matrix4x4 rotateZ{};
+	rotateX = MakeRotateXMatrix(radian.x);
+	rotateY = MakeRotateYMatrix(radian.y);
+	rotateZ = MakeRotateZMatrix(radian.z);
+
+	Matrix4x4 result{};
+	result = Multiply(rotateX, Multiply(rotateY, rotateZ));
+
+	return result;
+}
+
 
 // 3次元アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
@@ -335,6 +349,18 @@ Vector3 Add(const Vector3& posa, const Vector3& posb) {
 
 	return AddPos;
 }
+
+Vector3 Subtract(const Vector3& posa, const Vector3& posb) {
+	Vector3 SubTractPos;
+
+	SubTractPos.x = posa.x - posb.x;
+	SubTractPos.y = posa.y - posb.y;
+	SubTractPos.z = posa.z - posb.z;
+
+	return SubTractPos;
+}
+
+
 
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 	Vector3 p;

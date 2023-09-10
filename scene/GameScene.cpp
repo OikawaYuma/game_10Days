@@ -31,10 +31,7 @@ void GameScene::Initialize() {
 
 	// 3Dモデルの生成
 	model_ = Model::Create();
-	// レールカメラの生成
-	railCamera_ = new RailCamera;
-	// レールカメラの初期化
-	railCamera_->Initialize({0, 0, 0}, {0, 0, 0});
+	
 
 	// 自キャラの生成
 	player_ = new Player();
@@ -43,7 +40,11 @@ void GameScene::Initialize() {
 	Vector3 playerPos = {0, 0, 60};
 	// 自キャラの初期化
 	player_->Initialize(model_, playerTh_, playerPos);
-
+	// レールカメラの生成
+	railCamera_ = new RailCamera;
+	// レールカメラの初期化
+	railCamera_->Initialize();
+	player_->SetViewProjection(&railCamera_->GetViewProjection());
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 	LoadEnemyPopData();
@@ -175,6 +176,7 @@ void GameScene::Update() {
 		debugCamera_->SetFarZ(100000.0f);
 		// デバックカメラの更新
 		debugCamera_->Update();
+
 		// デバッグカメラの更新
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
@@ -221,7 +223,7 @@ void GameScene::Draw() {
 	/// </summary>
 	skydome_->Draw(viewProjection_);
 
-	floor_->Draw(viewProjection_);
+	//floor_->Draw(viewProjection_);
 	// 自キャラの描画
 	player_->Draw(viewProjection_);
 
@@ -346,7 +348,27 @@ void GameScene::CheckAllCollision() {
 		}
 	}
 
-#pragma endregion
+#pragma endregion 自キャラと自弾の当たり判定
+	// 自キャラの座標
+	posA = player_->GetWorldPosition();
+	radiusA = player_->GetRadius();
+	// 自キャラと敵弾全ての当たり判定
+	for (PlayerBullet* bullet : playerBullets) {
+		// 敵弾の座標
+		posB = bullet->GetWorldPosition();
+		float p2b = (posB.x - posA.x) * (posB.x - posA.x) + (posB.y - posA.y) * (posB.y - posA.y) +
+		            (posB.z - posA.z) * (posB.z - posA.z);
+		radiusB = bullet->GetRadius();
+		int r2r = (radiusA + radiusB) * (radiusA + radiusB);
+
+		if (p2b <= r2r) {
+			// 自キャラの衝突時コールバックを呼び出す
+			player_->OnCollision();
+			// 自キャラの衝突時コールバックを呼び出す
+			bullet->OnCollision();
+		}
+	}
+
 }
 
 void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {

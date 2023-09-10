@@ -1,65 +1,83 @@
 ﻿#include "RailCamera.h"
-#include<Input.h>
-#include"function.h"
-#include<ImGuiManager.h>
+#include "function.h"
+#include <ImGuiManager.h>
+#include <Input.h>
 
-void RailCamera::Initialize(Vector3 pos, Vector3 rot) {	
-	
-	// 引数でワールド座標を受け取ってワールドトランスフォームに設定
-	worldTransform_.translation_.x = pos.x;
-	worldTransform_.translation_.y = pos.y;
-	worldTransform_.translation_.z = pos.z - 15;
-	// 引数で回転角[ラジアンを受け取ってワールドトランスフォームに設定
-	worldTransform_.rotation_ = rot;
+void RailCamera::Initialize() {
 	// ビュープロジェクションの初期化
-	viewProjection_.farZ = 10000.0f;
+	viewProjection_.farZ = 10000;
 	viewProjection_.Initialize();
-	move.z = 0.0f;
+
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
+	Vector3 offset = {0.0f, 6.0f, -30.0f};
 };
 
-void RailCamera::Update(){
-	// 行列を定数バッファに転送
-	//worldTransform_.TransferMatrix();
-
-	
+void RailCamera::Update() {
 	// カメラの座標を画面表示する処理
 	ImGui::Begin("Camera");
 	ImGui::SliderFloat("%f", &move.z, 0.0f, 0.2f);
-
-	//ImGui::SliderFloat("%f", &.z, 0.0f, 0.2f);
-	//ImGui::SliderFloat("%f", &move.z, 0.0f, 0.2f);
-	//ImGui::SliderFloat("%f", &move.z, 0.0f, 0.2f);
-
-
 	ImGui::Text(
-	    " translasion %f  %f  %f", worldTransform_.matWorld_.m[3][0], worldTransform_.matWorld_.m[3][1], worldTransform_.matWorld_.m[3][2]);
+	    "rotation:(%f,%f,%f)", viewProjection_.rotation_.x, viewProjection_.rotation_.y,
+	    viewProjection_.rotation_.z);
 	ImGui::Text(
-	    "rotate %f  %f  %f", worldTransform_.rotation_.x, worldTransform_.rotation_.y,worldTransform_.rotation_.z
-	);
+	    ":(%f,%f,%f)", viewProjection_.rotation_.x, viewProjection_.rotation_.y,
+	    viewProjection_.rotation_.z);
+
 	ImGui::End();
+	Vector3 offset = {0.0f, 6.0f, -30.0f};
 
-	// 座標移動（ベクトルの加算）
-	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, move);
+	// 追従対象があれば
+	if (target_) {
+		// 追従カメラまでのオフセット
+		// Vector3 offset = { 0.0f,6.0f,-30.0f };
 
+		// カメラの角度から回転行列を計算
+		Matrix4x4 rotateMatrix = MakeRotateMatrix(viewProjection_.rotation_);
+		// オフセットをカメラの回転に合わせて回転
+		offset = TransformNormal(offset, rotateMatrix);
+
+		// 座標をコピーしてオフセット分ずらす
+		viewProjection_.translation_.x = target_->translation_.x + offset.x;
+		viewProjection_.translation_.y = target_->translation_.y + offset.y;
+		viewProjection_.translation_.z = target_->translation_.z + offset.z;
+	}
 	// 回転速さ[ラジアン/frame]
 	const float kRotSpeed = 0.02f;
+	const float playerRotSpeed = 0.02f;
 
-	// 押した方向で移動ベクトルを変更
 	if (input_->PushKey(DIK_A)) {
-		worldTransform_.rotation_.y -= kRotSpeed;
+		viewProjection_.rotation_.y -= kRotSpeed;
+
 	} else if (input_->PushKey(DIK_D)) {
-		worldTransform_.rotation_.y += kRotSpeed;
+		viewProjection_.rotation_.y += kRotSpeed;
 	}
-	
-	//.UpdateMatrix();
-	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_,worldTransform_.rotation_,worldTransform_.translation_);
 
-	// カメラオブジェクトのワールド行列からビュー行列を計算する
-	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
+	if (input_->PushKey(DIK_W)) {
+		viewProjection_.rotation_.x -= kRotSpeed;
 
-	
+	} else if (input_->PushKey(DIK_S)) {
+		viewProjection_.rotation_.x += kRotSpeed;
+	}
+	//-1.57で反転
+	if (viewProjection_.rotation_.x <= -1.57) {
+		offset.z *= -1;
+	} else {
+		//	viewProjection_.translation_.y *= -1;
+	}
 
+	XINPUT_STATE joyState1;
 
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
+		viewProjection_.rotation_.y +=
+		    (float)joyState1.Gamepad.sThumbLX / SHRT_MAX * playerRotSpeed;
+		viewProjection_.rotation_.x -=
+		    (float)joyState1.Gamepad.sThumbLY / SHRT_MAX * playerRotSpeed;
+	}
+
+	// ビュー行列の更新
+	viewProjection_.UpdateViewMatrix();
+	// ビュー行列の転送
+	viewProjection_.TransferMatrix();
 };

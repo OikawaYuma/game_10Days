@@ -2,13 +2,13 @@
 #include"function.h"
 #include<cassert>
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 	// NULLポインタチェック
 	assert(model);
 
 	model_ = model;
 	//テクスチャ読み込み
-	textureHandle_ = TextureManager::Load("PLAYER.png");
+	textureHandle_ = TextureManager::Load("Enemy.png");
 
 	// WorldTransformの初期化
 	worldTransform_.Initialize();
@@ -24,13 +24,40 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vecto
 	worldTransform_.UpdateMatrix();
 
 	// 引数で受け取った速度をメンバ変数に代入
-	velocity_ = velocity;
+	velocity_ = {0,0,0};
 
 	
 }
-void PlayerBullet::Update() {
+void PlayerBullet::Update(const Vector3& position ) {
+
+	// 敵弾から自キャラへのベクトル計算
+	Vector3 toPlayer;
+	toPlayer.x = position .x - worldTransform_.matWorld_.m[3][0];
+	toPlayer.y = position .y - worldTransform_.matWorld_.m[3][1];
+	toPlayer.z = position .z - worldTransform_.matWorld_.m[3][2];
+
+	float t = 0.01f;
+
+	// 引数で受け取った速度をメンバ変数に代入
+	velocity_ = SLerp(
+	    toPlayer,
+	    {worldTransform_.matWorld_.m[3][0], worldTransform_.matWorld_.m[3][1],
+	     worldTransform_.matWorld_.m[3][2]},
+	    t);
+
+	velocity_.x *= 0.5f;
+	velocity_.y *= 0.5f;
+	velocity_.z *= 0.5f;
+
+	// Y軸周り角度（Θy）
+	worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
+	float velocityXZ = sqrt((velocity_.x * velocity_.x) + (velocity_.z * velocity_.z));
+
+	worldTransform_.rotation_.x = std::atan2(-velocity_.y, velocityXZ);
 
 	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, velocity_);
+
+	
 	//行列を更新
 	worldTransform_.UpdateMatrix();
 
@@ -51,7 +78,7 @@ void PlayerBullet::Draw(ViewProjection viewProjectiom) {
 Vector3 PlayerBullet::GetWorldPosition() {
 	// ワールド行列座標を入れる変数
 	Vector3 worldPos;
-	// ワールド行列の平行移動成分を取得（ワールド座標）
+	// ワールド行列の平行移動成分を取得（ワールド座標）:
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
@@ -60,6 +87,4 @@ Vector3 PlayerBullet::GetWorldPosition() {
 }
 
 
-void PlayerBullet::OnCollision(){ 
-	isDead_ = true;
-};
+void PlayerBullet::OnCollision() { velocity_ = {0, 0, 0}; }
