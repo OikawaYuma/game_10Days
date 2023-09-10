@@ -7,6 +7,7 @@
 #include <fstream>
 #include <math.h>
 
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -83,149 +84,161 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
-	// デスフラグの立った弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->GetIsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
-
-	// デスフラグの立った弾を削除
-	enemys_.remove_if([](Enemy* enemy) {
-		if (!enemy->GetIsAlive()) {
-			delete enemy;
-			return true;
-		}
-		return false;
-	});
-
-	// デスフラグが立った落ちてる体を削除
-	drapBodys_.remove_if([](DrapBody* dropBody) {
-		if (!dropBody->GetIsAlive()) {
-			delete dropBody;
-			return true;
-		}
-		return false;
-	});
-
-	UpdateEnemyPopCommands();
-
-	skydome_->Update();
-	floor_->Update();
-	// player_->SetParent(&railCamera_->GetWorldTransform());
-	//  自キャラとレールカメラの親子関係を結ぶ
-
-	/*-------------------------------------------
-	           DrapBody
-	------------------------------------------*/
-	DrapBodyAppearTimer_++;
-	
-	if (DrapBodyAppearTimer_ >= 50) {
-		DrapBody* newDrapBody = new DrapBody;
-		newDrapBody->SetPlayer(player_);
-		drapBodys_.push_back(newDrapBody);
-		randBodyPosX_ = rand() % 300 - 150;
-		randBodyPosY_ = rand() % 300 - 150;
-		randBodyPosZ_ = rand() % 300 - 150;
-		Vector3 randDBodyPos = {(float)randBodyPosX_, (float)randBodyPosY_, (float)randBodyPosZ_};
-		newDrapBody->Initialize(randDBodyPos);
-
-		DrapBodyAppearTimer_ = 0;
-	}
-	for (DrapBody* drapBody : drapBodys_) {
-		ImGui::Begin("DrapBody");
-		ImGui::Text("DrapBodyT :%d", drapBody->GetWorldPosition().x);
-		ImGui::End();
-		drapBody->Update();
-	}
-	// 自キャラの更新あ
-	player_->Update(viewProjection_);
-
-	// 敵キャラの更新
-	for (Enemy* enemy : enemys_) {
-		enemy->Update();
-
-		ImGui::Begin("Debug5");
-		ImGui::Text("bullet :%d", enemy->GetShotTimer());
-		ImGui::End();
-		// enemy->Fire();
-		if (enemy->GetShotTimer() >= enemy->kFireInterval) {
-			assert(player_);
-			// 弾の速度
-			const float kBulletSpeed = 1.0f;
-
-			Vector3 start = enemy->GetWorldPosition();
-			Vector3 end = player_->GetWorldPosition();
-
-			Vector3 diffVector;
-			diffVector.x = end.x - start.x;
-			diffVector.y = end.y - start.y;
-			diffVector.z = end.z - start.z;
-
-			diffVector = Normalize(diffVector);
-			diffVector.x *= kBulletSpeed;
-			diffVector.y *= kBulletSpeed;
-			diffVector.z *= kBulletSpeed;
-
-			Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
-
-			// 速度ベクトルを自機の向きに合わせて回転させる
-			velocity = TransformNormal(velocity, enemy->GetWorldTransform().matWorld_);
-
-			// 弾を生成し、初期化
-			EnemyBullet* newBullet = new EnemyBullet();
-			newBullet->Initialize(model_, enemy->GetWorldTransform().translation_, velocity);
-			newBullet->SetPlayer(player_);
-			// 弾を登録する
-			enemyBullets_.push_back(newBullet);
-			enemy->SetShotInterval(0);
-		}
+	if (input_->PushKey(DIK_SPACE)) {
+		phase_ = Phase::PLAY;
 	}
 
-	// 弾更新
-	for (EnemyBullet* bullet : enemyBullets_) {
-		bullet->Update();
-	}
+	switch (phase_) {
+	///-----------TITLE-----------///
+	case Phase::TITEL:
+		break;
 
-	CheckAllCollision();
+	///-----------PLAY-----------///
+	case Phase::PLAY:
+		// デスフラグの立った弾を削除
+		enemyBullets_.remove_if([](EnemyBullet* bullet) {
+			if (bullet->GetIsDead()) {
+				delete bullet;
+				return true;
+			}
+			return false;
+		});
+
+		// デスフラグの立った弾を削除
+		enemys_.remove_if([](Enemy* enemy) {
+			if (!enemy->GetIsAlive()) {
+				delete enemy;
+				return true;
+			}
+			return false;
+		});
+
+		// デスフラグが立った落ちてる体を削除
+		drapBodys_.remove_if([](DrapBody* dropBody) {
+			if (!dropBody->GetIsAlive()) {
+				delete dropBody;
+				return true;
+			}
+			return false;
+		});
+
+		UpdateEnemyPopCommands();
+
+		skydome_->Update();
+		floor_->Update();
+		// player_->SetParent(&railCamera_->GetWorldTransform());
+		//  自キャラとレールカメラの親子関係を結ぶ
+
+		/*-------------------------------------------
+		           DrapBody
+		------------------------------------------*/
+		DrapBodyAppearTimer_++;
+
+		if (DrapBodyAppearTimer_ >= 50) {
+			DrapBody* newDrapBody = new DrapBody;
+			newDrapBody->SetPlayer(player_);
+			drapBodys_.push_back(newDrapBody);
+			randBodyPosX_ = rand() % 300 - 150;
+			randBodyPosY_ = rand() % 300 - 150;
+			randBodyPosZ_ = rand() % 300 - 150;
+			Vector3 randDBodyPos = {
+			    (float)randBodyPosX_, (float)randBodyPosY_, (float)randBodyPosZ_};
+			newDrapBody->Initialize(randDBodyPos);
+
+			DrapBodyAppearTimer_ = 0;
+		}
+		for (DrapBody* drapBody : drapBodys_) {
+			ImGui::Begin("DrapBody");
+			ImGui::Text("DrapBodyT :%d", drapBody->GetWorldPosition().x);
+			ImGui::End();
+			drapBody->Update();
+		}
+		// 自キャラの更新あ
+		player_->Update(viewProjection_);
+
+		// 敵キャラの更新
+		for (Enemy* enemy : enemys_) {
+			enemy->Update();
+
+			ImGui::Begin("Debug5");
+			ImGui::Text("bullet :%d", enemy->GetShotTimer());
+			ImGui::End();
+			// enemy->Fire();
+			if (enemy->GetShotTimer() >= enemy->kFireInterval) {
+				assert(player_);
+				// 弾の速度
+				const float kBulletSpeed = 1.0f;
+
+				Vector3 start = enemy->GetWorldPosition();
+				Vector3 end = player_->GetWorldPosition();
+
+				Vector3 diffVector;
+				diffVector.x = end.x - start.x;
+				diffVector.y = end.y - start.y;
+				diffVector.z = end.z - start.z;
+
+				diffVector = Normalize(diffVector);
+				diffVector.x *= kBulletSpeed;
+				diffVector.y *= kBulletSpeed;
+				diffVector.z *= kBulletSpeed;
+
+				Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
+
+				// 速度ベクトルを自機の向きに合わせて回転させる
+				velocity = TransformNormal(velocity, enemy->GetWorldTransform().matWorld_);
+
+				// 弾を生成し、初期化
+				EnemyBullet* newBullet = new EnemyBullet();
+				newBullet->Initialize(model_, enemy->GetWorldTransform().translation_, velocity);
+				newBullet->SetPlayer(player_);
+				// 弾を登録する
+				enemyBullets_.push_back(newBullet);
+				enemy->SetShotInterval(0);
+			}
+		}
+
+		// 弾更新
+		for (EnemyBullet* bullet : enemyBullets_) {
+			bullet->Update();
+		}
+
+		CheckAllCollision();
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_Q) && isDebugCameraActive_ == false) {
-		isDebugCameraActive_ = true;
-	}
+		if (input_->TriggerKey(DIK_Q) && isDebugCameraActive_ == false) {
+			isDebugCameraActive_ = true;
+		}
 #endif
-	railCamera_->Update();
+		railCamera_->Update();
 
-	viewProjection_.matView = railCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
 
-	// ビュープロジェクション行列の転送
-	viewProjection_.TransferMatrix();
-
-	// カメラの処理
-	if (isDebugCameraActive_) {
-		debugCamera_->SetFarZ(100000.0f);
-		// デバックカメラの更新
-		debugCamera_->Update();
-
-		// デバッグカメラの更新
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
-	} else {
 
-		// ビュープロジェクション行列の更新と転送
-		// viewProjection_.UpdateMatrix();
+		// カメラの処理
+		if (isDebugCameraActive_) {
+			debugCamera_->SetFarZ(100000.0f);
+			// デバックカメラの更新
+			debugCamera_->Update();
+
+			// デバッグカメラの更新
+			viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+			viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+			// ビュープロジェクション行列の転送
+			viewProjection_.TransferMatrix();
+		} else {
+
+			// ビュープロジェクション行列の更新と転送
+			// viewProjection_.UpdateMatrix();
+		}
+		/*float a = player_->GetParent()->parent_->matWorld_.m[3][2];
+		float b = player_->GetWorldPosition().z;
+		ImGui::Begin("Debug2");
+		ImGui::Text("%f  ,  %f", a,b);
+		ImGui::End();*/
 	}
-	/*float a = player_->GetParent()->parent_->matWorld_.m[3][2];
-	float b = player_->GetWorldPosition().z;
-	ImGui::Begin("Debug2");
-	ImGui::Text("%f  ,  %f", a,b);
-	ImGui::End();*/
 }
 
 void GameScene::Draw() {
@@ -236,7 +249,7 @@ void GameScene::Draw() {
 #pragma region 背景スプライト描画
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-
+	
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
@@ -283,7 +296,13 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-	player_->DrawUI();
+	switch (phase_) {
+	///-----------TITLE-----------///
+	case Phase::TITEL:
+		player_->DrawUI();
+		break;
+	}
+	
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>

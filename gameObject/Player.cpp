@@ -33,11 +33,11 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 	worldTransform3DReticle_.Initialize();
 
 	// レティクル用テクスチャ取得
-	uint32_t textureReticle = TextureManager::Load("Reticle.png");
+	uint32_t textureReticle = TextureManager::Load("TITLE.png");
 
 	// スプライト生成
 	sprite2DReticle_ =
-	    Sprite::Create(textureReticle, {500, 500}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	    Sprite::Create(textureReticle, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();

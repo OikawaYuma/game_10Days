@@ -21,6 +21,15 @@
 #include"RailCamera.h"
 
 #include<sstream>
+
+enum class Phase {
+	TITEL,  // タイトル
+	PLAY,   // プレイ
+	RESULT, // リザルト
+	POSE,   // ポーズ
+};
+
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -157,6 +166,7 @@ private: // メンバ変数
 	// 敵発生コマンド
 	std::stringstream enemyPopCommands;
 
-
+	// フェーズ
+	Phase phase_ = Phase::TITEL;
 	
 };
