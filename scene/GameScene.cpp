@@ -5,6 +5,7 @@
 #include "WorldTransform.h"
 #include <cassert>
 #include <fstream>
+#include <math.h>
 
 GameScene::GameScene() {}
 
@@ -45,8 +46,10 @@ void GameScene::Initialize() {
 	// レールカメラの初期化
 	railCamera_->Initialize();
 	player_->SetViewProjection(&railCamera_->GetViewProjection());
+	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
+
 	// 自キャラとレールカメラの親子関係を結ぶ
-	player_->SetParent(&railCamera_->GetWorldTransform());
+	//player_->SetParent(&railCamera_->GetWorldTransform());
 	LoadEnemyPopData();
 	// 敵弾の生成
 	// EnemyBullet* newBullet = new EnemyBullet;
@@ -81,7 +84,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-
+	
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->GetIsDead()) {
@@ -106,6 +109,25 @@ void GameScene::Update() {
 	floor_->Update();
 	// player_->SetParent(&railCamera_->GetWorldTransform());
 	//  自キャラとレールカメラの親子関係を結ぶ
+
+	/*-------------------------------------------
+	           DrapBody
+	------------------------------------------*/
+	DrapBodyAppearTimer_++;
+
+	if (DrapBodyAppearTimer_ >= 50) {
+		DrapBody* newDrapBody = new DrapBody;
+		drapBodys_.push_back(newDrapBody);
+		Vector3 randDBodyPos = {};
+		newDrapBody->Initialize({30, 30, 30});
+
+		DrapBodyAppearTimer_ = 0;
+
+	}
+
+
+
+
 
 	// 自キャラの更新あ
 	player_->Update(viewProjection_);
@@ -236,6 +258,10 @@ void GameScene::Draw() {
 	// 敵弾の描画
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Draw(viewProjection_);
+	}
+
+	for (DrapBody* drapBody : drapBodys_) {
+		drapBody->Draw(viewProjection_);
 	}
 
 	// 3Dオブジェクト描画後処理

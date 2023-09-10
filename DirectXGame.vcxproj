@@ -110,6 +110,7 @@
     <ClCompile Include="3d\WorldTransformEx.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="gameObject\DrapBody.cpp" />
     <ClCompile Include="gameObject\Enemy.cpp" />
     <ClCompile Include="gameObject\EnemyBullet.cpp" />
     <ClCompile Include="gameObject\Floor.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="gameObject\DrapBody.h" />
     <ClInclude Include="gameObject\Enemy.h" />
     <ClInclude Include="gameObject\EnemyBullet.h" />
     <ClInclude Include="gameObject\Floor.h" />

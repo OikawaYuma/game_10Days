@@ -15,6 +15,7 @@
 #include "Player.h"
 #include"Enemy.h"
 #include"EnemyBullet.h"
+#include "DrapBody.h"
 #include"Skydome.h"
 #include "Floor.h"
 #include"RailCamera.h"
@@ -110,6 +111,16 @@ private: // メンバ変数
 
 	//スポーンタイマー
 	int respownTimer_ = 0;
+
+
+	// DrapBodyAppearTimer
+	int DrapBodyAppearTimer_ = 60;
+
+	//DrapBody 
+	DrapBody* drapBody_ = nullptr;
+	std::list<DrapBody*> drapBodys_;
+
+
 
 	// スポーンフラグ
 	bool isRespown = true;
