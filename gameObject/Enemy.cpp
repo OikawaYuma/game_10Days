@@ -10,7 +10,7 @@ void Enemy::Initialize(Vector3 translation) {
 	// 3Dモデルの生成
 	model_ = Model::Create();
 	
-
+	worldTransform_.scale_ = {30.0f, 30.0f, 30.0f};
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();
 	// 引数で受け取った初期座標をセット
