@@ -46,8 +46,8 @@ void GameScene::Initialize() {
 
 	player_->SetViewProjection(&railCamera_->GetViewProjection());
 	// 自キャラとレールカメラの親子関係を結ぶ
-	player_->SetParent(&railCamera_->GetWorldTransform());
-	//railCamera_->SetworldTransform_(&player_->GetWorldTransform());
+	//player_->SetParent(&railCamera_->GetWorldTransform());
+	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
 
 	LoadEnemyPopData();
 	// 敵弾の生成
@@ -83,82 +83,103 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	if (input_->PushKey(DIK_SPACE)) {
+		phase_ = Phase::PLAY;
+	}
+	
+	switch (phase_)
+	{
+	///-----------TITLE-----------///
+	case Phase::TITEL:
+		break;
 
-	// デスフラグの立った弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->GetIsDead()) {
-			delete bullet;
-			return true;
+	///-----------PLAY-----------///
+	case Phase::PLAY:
+
+		// デスフラグの立った弾を削除
+		enemyBullets_.remove_if([](EnemyBullet* bullet) {
+			if (bullet->GetIsDead()) {
+				delete bullet;
+				return true;
+			}
+			return false;
+			});
+
+		// デスフラグの立った弾を削除
+		enemys_.remove_if([](Enemy* enemy) {
+			if (!enemy->GetIsAlive()) {
+				delete enemy;
+				return true;
+			}
+			return false;
+			});
+
+		UpdateEnemyPopCommands();
+
+		//floor_->Update();
+		// player_->SetParent(&railCamera_->GetWorldTransform());
+		//  自キャラとレールカメラの親子関係を結ぶ
+
+		// 自キャラの更新
+		player_->Update(viewProjection_);
+		railCamera_->Update();
+		// 敵キャラの更新
+		for (Enemy* enemy : enemys_) {
+			enemy->Update();
+
+			ImGui::Begin("Debug5");
+			ImGui::Text("bullet :%d", enemy->GetShotTimer());
+			ImGui::End();
+			// enemy->Fire();
+			if (enemy->GetShotTimer() >= enemy->kFireInterval) {
+				assert(player_);
+				// 弾の速度
+				const float kBulletSpeed = 1.0f;
+
+				Vector3 start = enemy->GetWorldPosition();
+				Vector3 end = player_->GetWorldPosition();
+
+				Vector3 diffVector;
+				diffVector.x = end.x - start.x;
+				diffVector.y = end.y - start.y;
+				diffVector.z = end.z - start.z;
+
+				diffVector = Normalize(diffVector);
+				diffVector.x *= kBulletSpeed;
+				diffVector.y *= kBulletSpeed;
+				diffVector.z *= kBulletSpeed;
+
+				Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
+
+				// 速度ベクトルを自機の向きに合わせて回転させる
+				velocity = TransformNormal(velocity, enemy->GetWorldTransform().matWorld_);
+
+				// 弾を生成し、初期化
+				EnemyBullet* newBullet = new EnemyBullet();
+				newBullet->Initialize(model_, enemy->GetWorldTransform().translation_, velocity);
+				newBullet->SetPlayer(player_);
+				// 弾を登録する
+				enemyBullets_.push_back(newBullet);
+				enemy->SetShotInterval(0);
+			}
 		}
-		return false;
-		});
 
-	// デスフラグの立った弾を削除
-	enemys_.remove_if([](Enemy* enemy) {
-		if (!enemy->GetIsAlive()) {
-			delete enemy;
-			return true;
+		// 弾更新
+		for (EnemyBullet* bullet : enemyBullets_) {
+			bullet->Update();
 		}
-		return false;
-		});
 
-	UpdateEnemyPopCommands();
+		CheckAllCollision();
+		break;
+	case Phase::RESULT:
+		break;
+	case Phase::POSE:
+		break;
+	default:
+		break;
+	}
 
 	skydome_->Update();
-	floor_->Update();
-	// player_->SetParent(&railCamera_->GetWorldTransform());
-	//  自キャラとレールカメラの親子関係を結ぶ
-
-	// 自キャラの更新
-	player_->Update(viewProjection_);
-
-	// 敵キャラの更新
-	for (Enemy* enemy : enemys_) {
-		enemy->Update();
-
-		ImGui::Begin("Debug5");
-		ImGui::Text("bullet :%d", enemy->GetShotTimer());
-		ImGui::End();
-		// enemy->Fire();
-		if (enemy->GetShotTimer() >= enemy->kFireInterval) {
-			assert(player_);
-			// 弾の速度
-			const float kBulletSpeed = 1.0f;
-
-			Vector3 start = enemy->GetWorldPosition();
-			Vector3 end = player_->GetWorldPosition();
-
-			Vector3 diffVector;
-			diffVector.x = end.x - start.x;
-			diffVector.y = end.y - start.y;
-			diffVector.z = end.z - start.z;
-
-			diffVector = Normalize(diffVector);
-			diffVector.x *= kBulletSpeed;
-			diffVector.y *= kBulletSpeed;
-			diffVector.z *= kBulletSpeed;
-
-			Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
-
-			// 速度ベクトルを自機の向きに合わせて回転させる
-			velocity = TransformNormal(velocity, enemy->GetWorldTransform().matWorld_);
-
-			// 弾を生成し、初期化
-			EnemyBullet* newBullet = new EnemyBullet();
-			newBullet->Initialize(model_, enemy->GetWorldTransform().translation_, velocity);
-			newBullet->SetPlayer(player_);
-			// 弾を登録する
-			enemyBullets_.push_back(newBullet);
-			enemy->SetShotInterval(0);
-		}
-	}
-
-	// 弾更新
-	for (EnemyBullet* bullet : enemyBullets_) {
-		bullet->Update();
-	}
-
-	CheckAllCollision();
 
 #ifdef _DEBUG
 	if (input_->PushKey(DIK_LALT)) {
@@ -168,7 +189,6 @@ void GameScene::Update() {
 		isDebugCameraActive_ = false;
 	}
 #endif
-	railCamera_->Update();
 
 	viewProjection_.matView = railCamera_->GetViewProjection().matView;
 	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
@@ -189,14 +209,8 @@ void GameScene::Update() {
 	}
 	else {
 
-		// ビュープロジェクション行列の更新と転送
-		// viewProjection_.UpdateMatrix();
+		
 	}
-	/*float a = player_->GetParent()->parent_->matWorld_.m[3][2];
-	float b = player_->GetWorldPosition().z;
-	ImGui::Begin("Debug2");
-	ImGui::Text("%f  ,  %f", a,b);
-	ImGui::End();*/
 }
 
 void GameScene::Draw() {
