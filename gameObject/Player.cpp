@@ -226,7 +226,14 @@ void Player::Update(ViewProjection viewProjection) {
 		Vector3 tmpPlayerBodyPos = worldTransform_.translation_;
 		//// 弾更新
 		for (PlayerBullet* bullet : bullets_) {
-			bullet->Update(GetWorldPosition());
+			if (i == 0) {
+				bullet->Update(GetWorldPosition());
+				tmpPlayerBodyPos = bullet->GetWorldPosition();
+			}
+			if (i >= 1) {
+				bullet->Update(tmpPlayerBodyPos);
+				tmpPlayerBodyPos = bullet->GetWorldPosition();
+			}
 			i++;
 		}
 	}
