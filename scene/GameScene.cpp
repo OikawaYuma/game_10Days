@@ -299,7 +299,6 @@ void GameScene::Draw() {
 	switch (phase_) {
 	///-----------TITLE-----------///
 	case Phase::TITEL:
-		player_->DrawUI();
 		break;
 	}
 	
