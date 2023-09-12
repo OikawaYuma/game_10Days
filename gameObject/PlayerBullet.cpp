@@ -2,7 +2,7 @@
 #include"function.h"
 #include<cassert>
 
-void PlayerBullet::Initialize(Model* model, const Vector3& position) {
+void PlayerBullet::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// NULLポインタチェック
 	assert(model);
 
@@ -16,7 +16,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& position) {
 	viewProjection_.Initialize();
 
 	//引数で受け取った初期座標をセット
-	worldTransform_.translation_ = position;
+	worldTransform_.translation_ = Subtract(position,velocity);
 	// z方向に伸びた形状
 	worldTransform_.scale_.x = 0.5f;
 	worldTransform_.scale_.y = 0.5f;
@@ -87,4 +87,7 @@ Vector3 PlayerBullet::GetWorldPosition() {
 }
 
 
-void PlayerBullet::OnCollision() { velocity_ = {0, 0, 0}; }
+void PlayerBullet::OnCollision() { 
+	isDead_ = true;
+	
+}

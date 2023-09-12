@@ -79,6 +79,7 @@ public:
 		IviewProjection_ = viewProjection;
 	}
 
+	
 
 private:
 	// ワールド変換データ
@@ -103,5 +104,20 @@ private:
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
 
+	int32_t bodyNum = 0;
+
 	const ViewProjection* IviewProjection_ = nullptr;
+
+
+	// Playerの移動
+	// キャラクターの移動ベクトル
+	Vector3 move = {0, 0, 0};
+
+	// キャラクターの移動速さ
+	const float kCharacterSpeed = 0.5f;
+
+	// キャラの移動
+	Vector3 kVelocity;
+
+
 };

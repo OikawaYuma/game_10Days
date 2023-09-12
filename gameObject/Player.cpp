@@ -58,14 +58,12 @@ void Player::Update(ViewProjection viewProjection) {
 	CameraworldTransform_.TransferMatrix();
 	CameraworldTransform_.UpdateMatrix();
 	// キャラクターの移動ベクトル
-	Vector3 move = {0, 0, 0};
+	move = {0, 0, 0};
 
 	
-	// キャラクターの移動速さ
-	const float kCharacterSpeed = 0.5f;
+	
 
-	// キャラの移動
-	Vector3 kVelocity(0, 0, kCharacterSpeed);
+	kVelocity = {0, 0, kCharacterSpeed};
 
 	kVelocity = Normalize(kVelocity);
 	kVelocity.x *= kCharacterSpeed;
@@ -78,14 +76,26 @@ void Player::Update(ViewProjection viewProjection) {
 	move.y += kVelocity.y;
 	move.z += kVelocity.z;
 
+
+
+
+	
+
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;
+			
 			return true;
 		}
-		return false;
+			return false;
 	});
+
+
+	
+
+
+
 	{
 		// 押した方向で移動ベクトルを変更（左右）
 		if (input_->PushKey(DIK_LEFT)) {
@@ -205,8 +215,9 @@ void Player::Update(ViewProjection viewProjection) {
 		    worldTransform_.translation_.y, worldTransform_.translation_.z);
 		ImGui::End();
 
-		ImGui::Begin("Debug1");
-		ImGui::Text("%f", worldTransform_.matWorld_.m[3][2]);
+		ImGui::Begin("bodyNum");
+		ImGui::Text("%d", bodyNum);
+		ImGui::Text("%d", bullets_.size());
 		ImGui::End();
 
 		// キャラクター攻撃処理
@@ -244,6 +255,7 @@ void Player::Draw(ViewProjection viewProjection_) {
 void Player::Create(){
 	
 	{
+		
 		// 弾があれば破棄する
 		/*if (bullet_) {
 		    delete bullet_;
@@ -254,19 +266,33 @@ void Player::Create(){
 		Vector3 velocity(0, 0, kBulletSpeed);
 
 		// 自機から照準オブジェクトへのベクトル
-		velocity.x = 0;
-		velocity.y = 0;
-		velocity.z = 0;
-
-		
+		velocity.x = GetWorldPosition().x;
+		velocity.y = GetWorldPosition().y;
+		velocity.z = GetWorldPosition().z;
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
+		bullets_.push_back(newBullet);
+		velocity = Normalize(velocity);
+		Vector3 velo = {
+		    move.x * 5 * (bullets_.size() + 1), move.y * 5 * (bullets_.size() + 1),
+		    move.z * 5 * (bullets_.size() + 1)};
+
+		velocity.x *= kBulletSpeed;
+		velocity.y *= kBulletSpeed;
+		velocity.z *= kBulletSpeed;
+		
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+
+		
+		//velo = TransformNormal(velo, worldTransform_.matWorld_);
+		
+		
 
 		// 弾を登録する
 		
-		newBullet->Initialize(
-		    model_, {GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - 10});
-		bullets_.push_back(newBullet);
+		newBullet->Initialize(model_, GetWorldPosition(), velo);
+		
 	}
 
 	// ゲームパッドを押したときの処理
@@ -303,15 +329,16 @@ void Player::Create(){
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition());
+		newBullet->Initialize(model_, GetWorldPosition(),velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}
 };
 void Player::Attack() {
+	
 	if (input_->TriggerKey(DIK_SPACE)) {
-
+		bodyNum++;
 		// 弾があれば破棄する
 		/*if (bullet_) {
 		    delete bullet_;
@@ -337,12 +364,9 @@ void Player::Attack() {
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 	
-
 		// 弾を登録する
 		bullets_.push_back(newBullet);
-		newBullet->Initialize(
-		    model_, {GetWorldPosition().x, GetWorldPosition().y,
-		             GetWorldPosition().z -10});
+		newBullet->Initialize(model_, GetWorldPosition(), {velocity.x*10,velocity.y*10,velocity.z*10});
 	}
 
 	// ゲームパッドを押したときの処理
@@ -379,7 +403,7 @@ void Player::Attack() {
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition());
+		newBullet->Initialize(model_, GetWorldPosition(),velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);

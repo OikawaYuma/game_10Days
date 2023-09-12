@@ -64,7 +64,7 @@ private:
 
 	// メンバポインタ関数のテーブル
 	/*static void (Enemy::*pMoveTable[])();*/
-	int radius_ = 1;
+	int radius_ = 4;
 
 	// キーボード入力
 	Input* input_ = nullptr;

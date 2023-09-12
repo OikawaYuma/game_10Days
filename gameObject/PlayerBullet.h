@@ -3,7 +3,7 @@
 #include"Model.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
-
+class Player;
 class PlayerBullet {
 public:
 	/// <summary>
@@ -11,7 +11,7 @@ public:
 	/// </summary>
 	/// <param name="model"></param>
 	/// <param name="position"></param>
-	void Initialize(Model* model, const Vector3& position);
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
 
 	/// <summary>
 	/// 更新
@@ -28,12 +28,17 @@ public:
 	bool GetIsDead() const { return isDead_; }
 
 	// 衝突を検出したらコールバック関数
+
 	void OnCollision();
 
 	// 半径の値を取得
 
 	int GetRadius() { return radius_;  }
 	Vector3 GetWorldPosition();
+
+	// Setter
+	//void SetPlayer(Player* player) { player_ = player; }
+
 
 	private:
 	// ワールド変換データ
@@ -52,13 +57,14 @@ public:
 	Vector3 velocity_;
 
 	// 寿命<frm>
-	static const int32_t kLifeTime = 60 * 40;
+	static const int32_t kLifeTime = 60 * 50;
 
 	// デスタイマー
 	int32_t deathTimer_ = kLifeTime;
 	//デスフラグ
 	bool isDead_ = false;
 
+	//Player* player_ = nullptr;
 
 };
 
