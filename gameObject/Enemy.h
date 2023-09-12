@@ -60,7 +60,7 @@ public:
 
 
 	// 弾の発射間隔
-	static const int kFireInterval = 30*1;
+	static const int kFireInterval = 70*1;
 
 	void SetPlayer(Player* player) { player_ = player; }
 	WorldTransform GetWorldTransform() { return worldTransform_; }

@@ -148,9 +148,9 @@ void GameScene::Update() {
 			DrapBodyAppearTimer_ = 0;
 		}
 		for (DrapBody* drapBody : drapBodys_) {
-			ImGui::Begin("DrapBody");
+			/*ImGui::Begin("DrapBody");
 			ImGui::Text("DrapBodyT :%d", drapBody->GetWorldPosition().x);
-			ImGui::End();
+			ImGui::End();*/
 			drapBody->Update();
 		}
 		// 自キャラの更新あ
@@ -160,9 +160,9 @@ void GameScene::Update() {
 		for (Enemy* enemy : enemys_) {
 			enemy->Update();
 
-			ImGui::Begin("Debug5");
+			/*ImGui::Begin("Debug5");
 			ImGui::Text("bullet :%d", enemy->GetShotTimer());
-			ImGui::End();
+			ImGui::End();*/
 			// enemy->Fire();
 			if (enemy->GetShotTimer() >= enemy->kFireInterval) {
 				assert(player_);

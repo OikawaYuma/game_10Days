@@ -143,6 +143,13 @@ void Player::Update(ViewProjection viewProjection) {
 		} else if (input_->PushKey(DIK_S)) {
 			worldTransform_.rotation_.x += kRotSpeed;
 		}
+		XINPUT_STATE joyState1;
+
+		// ジョイスティック状態取得
+		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
+			worldTransform_.rotation_.y += (float)joyState1.Gamepad.sThumbLX / SHRT_MAX * kRotSpeed;
+			worldTransform_.rotation_.x -= (float)joyState1.Gamepad.sThumbLY / SHRT_MAX * kRotSpeed;
+		}
 		worldTransform_.UpdateMatrix();
 
 		// ビューポート
@@ -151,8 +158,6 @@ void Player::Update(ViewProjection viewProjection) {
 
 		// スプライトの現在座標を取得
 		Vector2 spritePosition = sprite2DReticle_->GetPosition();
-
-		XINPUT_STATE joyState1;
 
 		// ジョイスティック状態取得
 		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
