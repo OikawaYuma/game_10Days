@@ -29,6 +29,23 @@ void GameScene::Initialize() {
 	playerTh_ = TextureManager::Load("PLAYER.png");
 	sprite_ = Sprite::Create(playerTh_, { 100, 50 });
 
+	// BGM
+	BGMth_ = audio_->LoadWave("Low_frequency_porter.wav");
+	switch (phase_)
+	{
+	case Phase::TITEL:
+		break;
+	case Phase::PLAY:
+		//audio_->PlayWave(BGMth_);
+		break;
+	case Phase::RESULT:
+		break;
+	case Phase::POSE:
+		break;
+	default:
+		break;
+	}
+
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
@@ -95,6 +112,9 @@ void GameScene::Update() {
 
 	///-----------PLAY-----------///
 	case Phase::PLAY:
+		
+		audio_->PlayWave(BGMth_);
+
 
 		// デスフラグの立った弾を削除
 		enemyBullets_.remove_if([](EnemyBullet* bullet) {
@@ -211,6 +231,7 @@ void GameScene::Update() {
 
 		
 	}
+
 }
 
 void GameScene::Draw() {

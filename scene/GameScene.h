@@ -101,6 +101,10 @@ private: // メンバ変数
 	// テクスチャハンドル
 	uint32_t playerTh_;
 
+	// 音声ハンドル
+	uint32_t BGMth_ = 0;
+	//uint32_t BGMth_1 = 0u;
+
 	//スプライト
 	Sprite* sprite_ = nullptr;
 
