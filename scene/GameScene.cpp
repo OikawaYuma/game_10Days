@@ -97,7 +97,7 @@ void GameScene::Update() {
 	case Phase::TITEL:
 		flag_P = true;
 		if (flag_T == true) {
-			BGMth_Tr = audio_->PlayWave(BGMth_T, true);
+			BGMth_Tr = audio_->PlayWave(BGMth_T, true,0.5f);
 			flag_T = false;
 		}
 		if (input_->PushKey(DIK_SPACE)) {
@@ -110,7 +110,7 @@ void GameScene::Update() {
 	case Phase::PLAY:
 		flag_T = true;
 		if (flag_P == true) {
-			audio_->PlayWave(BGMth_P);
+			audio_->PlayWave(BGMth_P,true,0.35f);
 			flag_P = false;
 		}
 

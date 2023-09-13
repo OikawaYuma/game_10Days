@@ -66,12 +66,13 @@ void RailCamera::Update() {
 	else if (input_->PushKey(DIK_S)) {
 		viewProjection_.rotation_.x += kRotSpeed;
 	}
+
 	//-1.57で反転
 	if (viewProjection_.rotation_.x <= -1.57) {
-		offset.z *= -1;
+		viewProjection_.rotation_.x = -1.57f;
 	}
-	else {
-	//	viewProjection_.translation_.y *= -1;
+	if(viewProjection_.rotation_.x >= 1.57) {
+		viewProjection_.rotation_.x = 1.57f;
 	}
 	
 	XINPUT_STATE joyState1;

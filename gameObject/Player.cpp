@@ -143,6 +143,13 @@ void Player::Update(ViewProjection viewProjection) {
 		else if (input_->PushKey(DIK_S)) {
 			worldTransform_.rotation_.x += kRotSpeed;
 		}
+		if (worldTransform_.rotation_.x <= -1.57) {
+			worldTransform_.rotation_.x = -1.57f;
+		}
+		if (worldTransform_.rotation_.x >= 1.57) {
+			worldTransform_.rotation_.x = 1.57f;
+		}
+
 		XINPUT_STATE joyState1;
 
 		// ジョイスティック状態取得
