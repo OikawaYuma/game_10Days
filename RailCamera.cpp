@@ -8,6 +8,8 @@ void RailCamera::Initialize() {
 	viewProjection_.farZ = 10000;
 	viewProjection_.Initialize();
 
+	viewProjection_.rotation_ = {0, 0, 0};
+	
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 	Vector3 offset = {0.0f, 6.0f, -30.0f};
@@ -15,7 +17,7 @@ void RailCamera::Initialize() {
 
 void RailCamera::Update() {
 	// カメラの座標を画面表示する処理
-	ImGui::Begin("Camera");
+	/*ImGui::Begin("Camera");
 	ImGui::SliderFloat("%f", &move.z, 0.0f, 0.2f);
 	ImGui::Text(
 	    "rotation:(%f,%f,%f)", viewProjection_.rotation_.x, viewProjection_.rotation_.y,
@@ -24,7 +26,7 @@ void RailCamera::Update() {
 	    ":(%f,%f,%f)", viewProjection_.rotation_.x, viewProjection_.rotation_.y,
 	    viewProjection_.rotation_.z);
 
-	ImGui::End();
+	ImGui::End();*/
 	Vector3 offset = {0.0f, 6.0f, -30.0f};
 
 	// 追従対象があれば

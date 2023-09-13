@@ -201,7 +201,7 @@ private: // メンバ変数
 	// フェーズ
 	Phase phase_ = Phase::TITEL;
 	//ゲームタイマー
-	int32_t gameTimerRimit = 60 * 10;
+	int32_t gameTimerRimit = 60 * 60;
 	int32_t gameTimer = 0;
 	
 };

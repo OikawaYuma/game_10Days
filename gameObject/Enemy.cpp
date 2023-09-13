@@ -163,9 +163,9 @@ void Enemy::Fire() {
 		diffVector.z *= kBulletSpeed;
 
 		Vector3 velocity(diffVector.x, diffVector.y, diffVector.z);
-		ImGui::Begin("Debug5");
+		/*ImGui::Begin("Debug5");
 		ImGui::Text("bullet :%f\n:%f\n:%f\n", diffVector.x, diffVector.y, diffVector.z);
-		ImGui::End();
+		ImGui::End();*/
 		// 速度ベクトルを自機の向きに合わせて回転させる
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
@@ -179,10 +179,10 @@ void Enemy::Fire() {
 		shotIntervalTimer_ = 0;
 
 	}
-	ImGui::Begin("Debug4");
+	/*ImGui::Begin("Debug4");
 	ImGui::Text("bullet :%d\n", shotIntervalTimer_);
 	
-	ImGui::End();
+	ImGui::End();*/
 }
 
 Vector3 Enemy::GetWorldPosition() {

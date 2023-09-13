@@ -66,10 +66,10 @@ void EnemyBullet::Update() {
 
 	worldTransform_.translation_ = Transform_Move(worldTransform_.translation_, velocity_);
 
-	ImGui::Begin("Debug3");
+	/*ImGui::Begin("Debug3");
 	ImGui::Text("bullet : %d\n",deathTimer_);
 
-	ImGui::End();
+	ImGui::End();*/
 	// 行列を更新
 	worldTransform_.UpdateMatrix();
 
