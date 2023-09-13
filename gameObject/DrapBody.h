@@ -36,6 +36,7 @@ public:
 	int GetRadius() { return radius_; }
 	// 衝突を検出したらコールバック関数
 	void OnCollision();
+	void OnCollision2();
 
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 	

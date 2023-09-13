@@ -52,5 +52,7 @@ void DrapBody::OnCollision() {
 	player_->Create();
 };
 
+void DrapBody::OnCollision2() { isAlive = false; };
+
 
 

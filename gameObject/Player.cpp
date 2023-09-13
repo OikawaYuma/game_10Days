@@ -34,6 +34,7 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = pos;
+	worldTransform_.rotation_ = {0, 0, 0};
 	worldTransform_.UpdateMatrix();
 
 	CameraworldTransform_.Initialize();
@@ -47,6 +48,8 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 	CameraworldTransform_.translation_.x = worldTransform_.translation_.x;
 	CameraworldTransform_.translation_.y = worldTransform_.translation_.y + 5;
 	CameraworldTransform_.translation_.z = worldTransform_.translation_.z - 10;
+
+
 }
 
 Vector3 Player::Rotate(Vector3 rot) { return rot; };

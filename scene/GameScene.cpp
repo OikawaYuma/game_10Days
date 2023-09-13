@@ -175,9 +175,11 @@ void GameScene::Update() {
 		
 		gameTimer++;
 		time_->Update(gameTimer);
+	
 		if (gameTimer >= gameTimerRimit) {
 			result_ = new Result;
-			result_->Initialize((int)playerBullets_.size());
+			const std::list<PlayerBullet*>& playerBullets2 = player_->Getbullet();
+			result_->Initialize((int)playerBullets2.size());
 			
 			phase_ = Phase::RESULT;
 			
@@ -310,13 +312,15 @@ void GameScene::Update() {
 			// プレイ時間の初期化
 			gameTimer = 0;
 			time_->Initialize();
+			player_->Initialize(model_, playerTh_, {0,0,-300});
+			railCamera_->Initialize();
 			//出ている弾の初期化
 			for (EnemyBullet* bullet : enemyBullets_) {
 				delete bullet;
 			}
 			//body delete
 			for (DrapBody* drapbody : drapBodys_) {
-				drapbody->OnCollision();
+				drapbody->OnCollision2();
 			}
 			// デスフラグが立った落ちてる体を削除
 			drapBodys_.remove_if([](DrapBody* dropBody) {
@@ -327,13 +331,14 @@ void GameScene::Update() {
 				return false;
 			});
 			// 自弾リストの取得
-		/*	playerBullets2 = &player_->Getbullet();
-			for (PlayerBullet* bullet : *playerBullets2) {
+			const std::list<PlayerBullet*>& playerBullets3 = player_->Getbullet();
+			for (PlayerBullet* bullet : playerBullets3) {
 				bullet->OnCollision();
 			}
-			player_->bulletDelet();*/
+			player_->bulletDelet();
 		
 			audio_->StopWave(BGMth_Rr);
+			flag_P = true;
 
 
 
