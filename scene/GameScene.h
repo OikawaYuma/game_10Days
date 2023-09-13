@@ -112,8 +112,7 @@ private: // メンバ変数
 	uint32_t BGMth_P = 0;
 	bool flag_P = true;
 
-
-
+	float playerTime = 0;
 
 	//スプライト
 	Sprite* sprite_ = nullptr;
