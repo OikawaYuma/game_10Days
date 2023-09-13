@@ -87,6 +87,7 @@ public: // メンバ関数
 	const std::list<EnemyBullet*>& Getbullet() const { return enemyBullets_; }
 
 	const std::list<DrapBody*>& GetDrapBody() const { return drapBodys_; }
+	const std::list<PlayerBullet*>& GetPlayerBullet() const { return playerBullets_; }
 	/// <summary>
 	/// 敵発生データの読み込み
 	/// </summary>
@@ -136,7 +137,7 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 	//自キャラ
 	Player* player_ = nullptr;
-	const std::list<PlayerBullet*>* playerBullets_ = nullptr;
+	const std::list<PlayerBullet*> playerBullets_;
 	/*-----敵のリスト管理--------*/
 	////敵キャラ
 	Enemy* enemy_ = nullptr;
@@ -200,7 +201,7 @@ private: // メンバ変数
 	// フェーズ
 	Phase phase_ = Phase::TITEL;
 	//ゲームタイマー
-	int32_t gameTimerRimit = 60 * 60;
+	int32_t gameTimerRimit = 60 * 10;
 	int32_t gameTimer = 0;
 	
 };

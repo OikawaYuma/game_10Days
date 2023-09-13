@@ -177,7 +177,7 @@ void GameScene::Update() {
 		time_->Update(gameTimer);
 		if (gameTimer >= gameTimerRimit) {
 			result_ = new Result;
-			result_->Initialize((int)playerBullets_->size());
+			result_->Initialize((int)playerBullets_.size());
 			
 			phase_ = Phase::RESULT;
 			
