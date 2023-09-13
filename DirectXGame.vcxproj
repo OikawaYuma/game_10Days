@@ -124,6 +124,7 @@
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="TimeInitialize\TimedCall.cpp" />
     <ClCompile Include="TimeInitialize\TimedCalled.cpp" />
+    <ClCompile Include="scene\Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="TimeInitialize\TimedCall.h" />
     <ClInclude Include="TimeInitialize\TimedCalled.h" />
+    <ClInclude Include="scene\Title.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">

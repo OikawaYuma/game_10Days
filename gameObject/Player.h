@@ -67,10 +67,7 @@ public:
 	const std::list<PlayerBullet*>& Getbullet() const { return bullets_; }
 	/// <summary>
 	/// UI描画
-	/// </summary>
-	void DrawUI();
 
-	void DrawSetumei();
 
 	// WorldTransform GetworldTransform() { return worldTransform_; }
 	const WorldTransform& GetWorldTransform() { return worldTransform_; };
@@ -103,10 +100,6 @@ private:
 	// 3Dレティクル用ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 
-	// 2Dレティクル用スプライト
-	Sprite* sprite2DReticle_ = nullptr;
-
-	Sprite* sprite2DSetumei_ = nullptr;
 
 	int32_t bodyNum = 0;
 

@@ -48,6 +48,8 @@ void GameScene::Initialize() {
 	railCamera_->Initialize();
 	player_->SetViewProjection(&railCamera_->GetViewProjection());
 	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
+	title_ = new Title;
+	title_->Initialize();
 
 	// 自キャラとレールカメラの親子関係を結ぶ
 	// player_->SetParent(&railCamera_->GetWorldTransform());
@@ -85,20 +87,30 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	
-	
+	// ゲームパッドを押したときの処理
+	XINPUT_STATE joyState;
 
+	// ゲームパッド未接続なら何もせず抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
+		skydome_->Update();
+	//floor_->Update();
+	
 	switch (phase_) {
 	///-----------TITLE-----------///
 	case Phase::TITEL:
-		if (input_->TriggerKey(DIK_SPACE)) {
+		if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) ) {
 			phase_ = Phase::SETUMEI;
 		}
 		break;
 	case Phase::SETUMEI:
-		skydome_->Update();
-		floor_->Update();
+		
 		if (input_->TriggerKey(DIK_SPACE)) {
+			phase_ = Phase::PLAY;
+		}
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
 			phase_ = Phase::PLAY;
 		}
 		break;
@@ -144,8 +156,7 @@ void GameScene::Update() {
 
 		UpdateEnemyPopCommands();
 
-		skydome_->Update();
-		floor_->Update();
+		
 		// player_->SetParent(&railCamera_->GetWorldTransform());
 		//  自キャラとレールカメラの親子関係を結ぶ
 
@@ -260,12 +271,13 @@ void GameScene::Update() {
 		ImGui::End();*/
 		break;
 	case Phase::RESULT:
-		// 自弾リストの取得
-		const std::list<PlayerBullet*>& playerBullets = player_->Getbullet();
-		ImGui::Begin("RESULT");
-		ImGui::Text("%d",playerBullets.size());
-		ImGui::End();
+		
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER &&
+		    XINPUT_GAMEPAD_RIGHT_SHOULDER==0) {
+			phase_ = Phase::TITEL;
+		}
 		break;
+
 
 
 
@@ -285,7 +297,7 @@ void GameScene::Draw() {
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
 	// sprite_->Draw();
-
+	
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -327,27 +339,25 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-	switch (phase_) {
-	///-----------TITLE-----------///
-	case Phase::TITEL:
-		player_->DrawUI();
-		break;
-	case Phase::SETUMEI:
-		player_->DrawSetumei();
-		break;
-	case Phase::PLAY:
-		break;
-	case Phase::RESULT:
-		
-		result_->Draw();
-		break;
-
-	}
 	
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	switch (phase_) {
+	///-----------TITLE-----------///
+	case Phase::TITEL:
+		title_->DrawUI();
+		break;
+	case Phase::SETUMEI:
+		title_->DrawSetumei();
+		break;
+	case Phase::PLAY:
+		break;
+	case Phase::RESULT:
 
+		result_->Draw();
+		break;
+	}
 	// スプライト描画後処理
 	Sprite::PostDraw();
 

@@ -21,6 +21,8 @@
 #include"RailCamera.h"
 #include "Result.h"
 #include<sstream>
+#include "Title.h"
+
 
 enum class Phase {
 	TITEL,  // タイトル
@@ -119,6 +121,7 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	std::list<Enemy*> enemys_;
 
+	Title* title_ = nullptr;
 	
 
 	//スポーンタイマー
@@ -149,6 +152,9 @@ private: // メンバ変数
 	//床
 	Floor* floor_ = nullptr;
 
+	// Title
+
+
 	//	レールカメラ
 	RailCamera* railCamera_ = nullptr;
 
@@ -173,7 +179,7 @@ private: // メンバ変数
 	// フェーズ
 	Phase phase_ = Phase::TITEL;
 	//ゲームタイマー
-	int32_t gameTimerRimit = 60 * 5;
+	int32_t gameTimerRimit = 60 * 60;
 	int32_t gameTimer = 0;
 	
 };
