@@ -19,11 +19,12 @@
 #include"Skydome.h"
 #include "Floor.h"
 #include"RailCamera.h"
-
+#include "Result.h"
 #include<sstream>
 
 enum class Phase {
 	TITEL,  // タイトル
+	SETUMEI,
 	PLAY,   // プレイ
 	RESULT, // リザルト
 	POSE,   // ポーズ
@@ -112,7 +113,7 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 	//自キャラ
 	Player* player_ = nullptr;
-
+	const std::list<PlayerBullet*>* playerBullets_ = nullptr;
 	/*-----敵のリスト管理--------*/
 	////敵キャラ
 	Enemy* enemy_ = nullptr;
@@ -151,6 +152,9 @@ private: // メンバ変数
 	//	レールカメラ
 	RailCamera* railCamera_ = nullptr;
 
+	// Result
+	Result* result_ = nullptr;
+
 	// 3Dモデル
 	Model* modelSkydome_ = nullptr;
 
@@ -169,7 +173,7 @@ private: // メンバ変数
 	// フェーズ
 	Phase phase_ = Phase::TITEL;
 	//ゲームタイマー
-	int32_t gameTimerRimit = 60 * 60;
+	int32_t gameTimerRimit = 60 * 5;
 	int32_t gameTimer = 0;
 	
 };

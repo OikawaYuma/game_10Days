@@ -8,6 +8,7 @@
 #include <math.h>
 
 
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
@@ -78,20 +79,28 @@ void GameScene::Initialize() {
 
 	// 軸方向の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
-
+	
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
 }
 
 void GameScene::Update() {
 	
-	if (input_->PushKey(DIK_SPACE)) {
-		phase_ = Phase::PLAY;
-	}
+	
 
 	switch (phase_) {
 	///-----------TITLE-----------///
 	case Phase::TITEL:
+		if (input_->TriggerKey(DIK_SPACE)) {
+			phase_ = Phase::SETUMEI;
+		}
+		break;
+	case Phase::SETUMEI:
+		skydome_->Update();
+		floor_->Update();
+		if (input_->TriggerKey(DIK_SPACE)) {
+			phase_ = Phase::PLAY;
+		}
 		break;
 
 	///-----------PLAY-----------///
@@ -122,10 +131,15 @@ void GameScene::Update() {
 			}
 			return false;
 		});
-
+		// 自弾リストの取得
+		playerBullets_ = &player_->Getbullet();
 		gameTimer++;
 		if (gameTimer >= gameTimerRimit) {
+			result_ = new Result;
+			result_->Initialize((int)playerBullets_->size());
+			
 			phase_ = Phase::RESULT;
+			
 		}
 
 		UpdateEnemyPopCommands();
@@ -316,11 +330,16 @@ void GameScene::Draw() {
 	switch (phase_) {
 	///-----------TITLE-----------///
 	case Phase::TITEL:
+		player_->DrawUI();
+		break;
+	case Phase::SETUMEI:
+		player_->DrawSetumei();
 		break;
 	case Phase::PLAY:
 		break;
 	case Phase::RESULT:
-		player_->DrawUI();
+		
+		result_->Draw();
 		break;
 
 	}

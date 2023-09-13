@@ -33,11 +33,18 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 	worldTransform3DReticle_.Initialize();
 
 	// レティクル用テクスチャ取得
-	uint32_t textureReticle = TextureManager::Load("TITLE.png");
+	uint32_t textureReticle = TextureManager::Load("Title.png");
+	// レティクル用テクスチャ取得
+	uint32_t textureSetumei = TextureManager::Load("setumei.png");
+
 
 	// スプライト生成
 	sprite2DReticle_ =
 	    Sprite::Create(textureReticle, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+
+		// スプライト生成
+	sprite2DSetumei_ =
+	    Sprite::Create(textureSetumei, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
@@ -459,4 +466,10 @@ void Player::DrawUI() {
 
 	// スプライト生成
 	sprite2DReticle_->Draw();
+}
+
+void Player::DrawSetumei() {
+
+	// スプライト生成
+	sprite2DSetumei_->Draw();
 }

@@ -120,6 +120,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math\function.cpp" />
     <ClCompile Include="RailCamera.cpp" />
+    <ClCompile Include="scene\Result.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="TimeInitialize\TimedCall.cpp" />
     <ClCompile Include="TimeInitialize\TimedCalled.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="math\Vector4.h" />
     <ClInclude Include="RailCamera.h" />
+    <ClInclude Include="scene\Result.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="TimeInitialize\TimedCall.h" />
     <ClInclude Include="TimeInitialize\TimedCalled.h" />
