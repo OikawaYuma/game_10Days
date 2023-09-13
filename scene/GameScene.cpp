@@ -333,6 +333,7 @@ void GameScene::Update() {
 			}
 			player_->bulletDelet();*/
 		
+			audio_->StopWave(BGMth_Rr);
 
 
 
