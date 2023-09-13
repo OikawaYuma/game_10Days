@@ -116,8 +116,8 @@ void Player::Update(ViewProjection viewProjection) {
 
 		// ゲームパッド状態取得
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
-			move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
+			/*move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
+			move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;*/
 		}
 		Vector3 tmpPlayerPos = worldTransform_.translation_;
 		// 座標移動（ベクトルの加算）
@@ -142,7 +142,7 @@ void Player::Update(ViewProjection viewProjection) {
 		// 回転速さ[ラジアン/frame]
 		const float kRotSpeed = 0.02f;
 
-		// 押した方向で移動ベクトルを変更
+		//// 押した方向で移動ベクトルを変更
 		if (input_->PushKey(DIK_A)) {
 			worldTransform_.rotation_.y -= kRotSpeed;
 		} else if (input_->PushKey(DIK_D)) {
@@ -153,6 +153,14 @@ void Player::Update(ViewProjection viewProjection) {
 		} else if (input_->PushKey(DIK_S)) {
 			worldTransform_.rotation_.x += kRotSpeed;
 		}
+
+		XINPUT_STATE joyState1;
+
+		// ジョイスティック状態取得
+		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
+			worldTransform_.rotation_.y += (float)joyState1.Gamepad.sThumbLX / SHRT_MAX * kRotSpeed;
+			worldTransform_.rotation_.x -= (float)joyState1.Gamepad.sThumbLY / SHRT_MAX * kRotSpeed;
+		}
 		worldTransform_.UpdateMatrix();
 
 		// ビューポート
@@ -161,8 +169,6 @@ void Player::Update(ViewProjection viewProjection) {
 
 		// スプライトの現在座標を取得
 		Vector2 spritePosition = sprite2DReticle_->GetPosition();
-
-		XINPUT_STATE joyState1;
 
 		// ジョイスティック状態取得
 		if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
@@ -226,7 +232,14 @@ void Player::Update(ViewProjection viewProjection) {
 		Vector3 tmpPlayerBodyPos = worldTransform_.translation_;
 		//// 弾更新
 		for (PlayerBullet* bullet : bullets_) {
-			bullet->Update(GetWorldPosition());
+			if (i == 0) {
+				bullet->Update(GetWorldPosition());
+				tmpPlayerBodyPos = bullet->GetWorldPosition();
+			}
+			if (i >= 1) {
+				bullet->Update(tmpPlayerBodyPos);
+				tmpPlayerBodyPos = bullet->GetWorldPosition();
+			}
 			i++;
 		}
 	}

@@ -61,7 +61,7 @@ worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw(ViewProjection viewProjection_) {
-	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+	//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	/*if (bullet) {
 	bullet->Draw(viewProjection_);
 	}*/

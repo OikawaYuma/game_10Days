@@ -62,10 +62,10 @@ void PlayerBullet::Update(const Vector3& position ) {
 	worldTransform_.UpdateMatrix();
 
 	// 時間経過でデス
-	if (--deathTimer_ <= 0) {
+	/*if (--deathTimer_ <= 0) {
 
 		isDead_ = true;
-	}
+	}*/
 
 }
 

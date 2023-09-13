@@ -448,7 +448,7 @@ void GameScene::CheckAllCollision() {
 			// 自キャラの衝突時コールバックを呼び出す
 			player_->OnCollision();
 			// 自キャラの衝突時コールバックを呼び出す
-			bullet->OnCollision();
+			//bullet->OnCollision();
 		}
 	}
 
