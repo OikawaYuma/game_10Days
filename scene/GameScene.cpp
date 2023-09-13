@@ -339,7 +339,7 @@ void GameScene::Update() {
 		
 			audio_->StopWave(BGMth_Rr);
 
-
+			flag_P = true;
 
 			phase_ = Phase::TITEL;
 		}
