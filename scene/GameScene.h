@@ -114,9 +114,18 @@ private: // メンバ変数
 
 	/// Play
 	uint32_t BGMth_P = 0;
+	uint32_t BGMth_Pr = 0;
+
 	bool flag_P = true;
 
 	float playerTime = 0;
+
+	///RESULT
+	uint32_t BGMth_R = 0;
+	uint32_t BGMth_Rr = 0;
+
+	bool flag_R = true;
+
 	//スプライト
 	Sprite* sprite_ = nullptr;
 

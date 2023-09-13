@@ -35,6 +35,7 @@ void GameScene::Initialize() {
 	// BGM
 	BGMth_P = audio_->LoadWave("Low_frequency_porter.mp3");
 	BGMth_T = audio_->LoadWave("Phone_Thinker.mp3");
+	BGMth_R = audio_->LoadWave("Dance.mp3");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
@@ -110,7 +111,7 @@ void GameScene::Update() {
 			phase_ = Phase::SETUMEI;
 		}
 
-		flag_P = true;
+		flag_R = true;
 		playerTime = 0;
 		if (flag_T == true) {
 			BGMth_Tr = audio_->PlayWave(BGMth_T, true, 0.5f);
@@ -140,7 +141,7 @@ void GameScene::Update() {
 		playerTime++;
 		if (playerTime >= 90) {
 			if (flag_P == true) {
-				audio_->PlayWave(BGMth_P, true, 0.35f);
+				BGMth_Pr = audio_->PlayWave(BGMth_P, true, 0.35f);
 				flag_P = false;
 			}
 		}
@@ -299,8 +300,13 @@ void GameScene::Update() {
 		ImGui::End();*/
 		break;
 	case Phase::RESULT:
-		
+		audio_->StopWave(BGMth_Pr);
+		if (flag_R == true) {
+			BGMth_Rr = audio_->PlayWave(BGMth_R, true, 0.4f);
+			flag_R = false;
+		}
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+			audio_->StopWave(BGMth_Rr);
 			phase_ = Phase::TITEL;
 		}
 		break;
