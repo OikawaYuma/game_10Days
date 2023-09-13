@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	sprite_ = Sprite::Create(playerTh_, { 100, 50 });
 
 	// BGM
-	BGMth_P = audio_->LoadWave("Low_frequency_porter.wav");
+	BGMth_P = audio_->LoadWave("Low_frequency_porter.mp3");
 	BGMth_T = audio_->LoadWave("Phone_Thinker.mp3");
 
 	
