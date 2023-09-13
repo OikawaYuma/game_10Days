@@ -84,6 +84,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	
 	if (input_->PushKey(DIK_SPACE)) {
 		phase_ = Phase::PLAY;
 	}
@@ -121,6 +122,11 @@ void GameScene::Update() {
 			}
 			return false;
 		});
+
+		gameTimer++;
+		if (gameTimer >= gameTimerRimit) {
+			phase_ = Phase::RESULT;
+		}
 
 		UpdateEnemyPopCommands();
 
@@ -238,6 +244,17 @@ void GameScene::Update() {
 		ImGui::Begin("Debug2");
 		ImGui::Text("%f  ,  %f", a,b);
 		ImGui::End();*/
+		break;
+	case Phase::RESULT:
+		// 自弾リストの取得
+		const std::list<PlayerBullet*>& playerBullets = player_->Getbullet();
+		ImGui::Begin("RESULT");
+		ImGui::Text("%d",playerBullets.size());
+		ImGui::End();
+		break;
+
+
+
 	}
 }
 
@@ -300,6 +317,12 @@ void GameScene::Draw() {
 	///-----------TITLE-----------///
 	case Phase::TITEL:
 		break;
+	case Phase::PLAY:
+		break;
+	case Phase::RESULT:
+		player_->DrawUI();
+		break;
+
 	}
 	
 	/// <summary>
