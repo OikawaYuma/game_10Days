@@ -194,6 +194,7 @@ void GameScene::Update() {
 		}
 		break;
 	case Phase::RESULT:
+		audio_->StopWave(BGMth_P);
 		break;
 	case Phase::POSE:
 		break;
