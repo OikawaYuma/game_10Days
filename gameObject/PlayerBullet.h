@@ -35,7 +35,7 @@ public:
 
 	int GetRadius() { return radius_;  }
 	Vector3 GetWorldPosition();
-
+	bool GetIsAlive() { return isDead_; }
 	// Setter
 	//void SetPlayer(Player* player) { player_ = player; }
 

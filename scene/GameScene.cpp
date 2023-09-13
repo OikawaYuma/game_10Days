@@ -139,7 +139,7 @@ void GameScene::Update() {
 	case Phase::PLAY:
 		flag_T = true;
 		playerTime++;
-		if (playerTime >= 90) {
+		if (playerTime >= 50) {
 			if (flag_P == true) {
 				BGMth_Pr = audio_->PlayWave(BGMth_P, true, 0.35f);
 				flag_P = false;
@@ -171,8 +171,8 @@ void GameScene::Update() {
 			}
 			return false;
 		});
-		// 自弾リストの取得
-		playerBullets_ = &player_->Getbullet();
+	
+		
 		gameTimer++;
 		time_->Update(gameTimer);
 		if (gameTimer >= gameTimerRimit) {
@@ -306,7 +306,36 @@ void GameScene::Update() {
 			flag_R = false;
 		}
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
-			audio_->StopWave(BGMth_Rr);
+			
+			// プレイ時間の初期化
+			gameTimer = 0;
+			time_->Initialize();
+			//出ている弾の初期化
+			for (EnemyBullet* bullet : enemyBullets_) {
+				delete bullet;
+			}
+			//body delete
+			for (DrapBody* drapbody : drapBodys_) {
+				drapbody->OnCollision();
+			}
+			// デスフラグが立った落ちてる体を削除
+			drapBodys_.remove_if([](DrapBody* dropBody) {
+				if (!dropBody->GetIsAlive()) {
+					delete dropBody;
+					return true;
+				}
+				return false;
+			});
+			// 自弾リストの取得
+		/*	playerBullets2 = &player_->Getbullet();
+			for (PlayerBullet* bullet : *playerBullets2) {
+				bullet->OnCollision();
+			}
+			player_->bulletDelet();*/
+		
+
+
+
 			phase_ = Phase::TITEL;
 		}
 		break;
@@ -352,17 +381,21 @@ void GameScene::Draw() {
 
 	// 敵キャラの描画
 	// 敵弾の描画
-	for (Enemy* enemy : enemys_) {
-		enemy->Draw(viewProjection_);
-	}
+	switch (phase_) {
+	case Phase::PLAY:
+		for (Enemy* enemy : enemys_) {
+			enemy->Draw(viewProjection_);
+		}
 
-	// 敵弾の描画
-	for (EnemyBullet* bullet : enemyBullets_) {
-		bullet->Draw(viewProjection_);
-	}
+		// 敵弾の描画
+		for (EnemyBullet* bullet : enemyBullets_) {
+			bullet->Draw(viewProjection_);
+		}
 
-	for (DrapBody* drapBody : drapBodys_) {
-		drapBody->Draw(viewProjection_);
+		for (DrapBody* drapBody : drapBodys_) {
+			drapBody->Draw(viewProjection_);
+		}
+		break;
 	}
 
 	// 3Dオブジェクト描画後処理

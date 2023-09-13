@@ -37,6 +37,8 @@ public:
 
 	void Create();
 
+	void bulletDelet();
+
 
 	/*----------------------------------
 	        Getter

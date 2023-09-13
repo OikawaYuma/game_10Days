@@ -6,15 +6,24 @@
 #include <Input.h>
 #include <cassert>
 
-#include"AxisIndicator.h"
+#include "AxisIndicator.h"
 
 Player::~Player() {
-	
+
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
-		
 	};
 }
+
+void Player::bulletDelet() {
+	bullets_.remove_if([](PlayerBullet* dropBody) {
+		if (!dropBody->GetIsAlive()) {
+			delete dropBody;
+			return true;
+		}
+		return false;
+	});
+};
 
 void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 
@@ -32,15 +41,12 @@ void Player::Initialize(Model* model, uint32_t textureHandle, Vector3 pos) {
 	// 3Dレティクルのワールドトラベル初期化
 	worldTransform3DReticle_.Initialize();
 
-	
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 
 	CameraworldTransform_.translation_.x = worldTransform_.translation_.x;
 	CameraworldTransform_.translation_.y = worldTransform_.translation_.y + 5;
 	CameraworldTransform_.translation_.z = worldTransform_.translation_.z - 10;
-
-
 }
 
 Vector3 Player::Rotate(Vector3 rot) { return rot; };
@@ -53,9 +59,6 @@ void Player::Update(ViewProjection viewProjection) {
 	CameraworldTransform_.UpdateMatrix();
 	// キャラクターの移動ベクトル
 	move = {0, 0, 0};
-
-	
-	
 
 	kVelocity = {0, 0, kCharacterSpeed};
 
@@ -70,25 +73,15 @@ void Player::Update(ViewProjection viewProjection) {
 	move.y += kVelocity.y;
 	move.z += kVelocity.z;
 
-
-
-
-	
-
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;
-			
+
 			return true;
 		}
-			return false;
+		return false;
 	});
-
-
-	
-
-
 
 	{
 		// 押した方向で移動ベクトルを変更（左右）
@@ -168,66 +161,68 @@ void Player::Update(ViewProjection viewProjection) {
 		    MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
 
 		// スプライトの現在座標を取得
-		//Vector2 spritePosition = sprite2DReticle_->GetPosition();
+		// Vector2 spritePosition = sprite2DReticle_->GetPosition();
 
 		//// ジョイスティック状態取得
-		//if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
+		// if (Input::GetInstance()->GetJoystickState(0, joyState1)) {
 		//	spritePosition.x += (float)joyState1.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
 		//	spritePosition.y -= (float)joyState1.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
 		//	// スプライトの座標変更を繁栄
 		//	sprite2DReticle_->SetPosition(spritePosition);
-		//}
+		// }
 		///*--------合成行列の逆行列--------------*/
 		//// ビュープロジェクションビューポート合成行列
-		//Matrix4x4 matVPV =
-		//    Multiply(Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+		// Matrix4x4 matVPV =
+		//     Multiply(Multiply(viewProjection.matView, viewProjection.matProjection),
+		//     matViewport);
 		//// 合成行列の逆行列を計算する
 
-		//Matrix4x4 matInverseVPV = Inverse(matVPV);
+		// Matrix4x4 matInverseVPV = Inverse(matVPV);
 
 		///*--------2点のワールド行列--------------*/
 		//// スクリーン座標
-		//Vector3 posNear = Vector3(static_cast<float>(spritePosition.x), (float)spritePosition.y, 0);
-		//Vector3 posFar = Vector3(static_cast<float>(spritePosition.x), float(spritePosition.y), 1);
+		// Vector3 posNear = Vector3(static_cast<float>(spritePosition.x), (float)spritePosition.y,
+		// 0); Vector3 posFar = Vector3(static_cast<float>(spritePosition.x),
+		// float(spritePosition.y), 1);
 		//// スクリーン座標系からワールド座標系へ
-		//posNear = Transform(posNear, matInverseVPV);
-		//posFar = Transform(posFar, matInverseVPV);
+		// posNear = Transform(posNear, matInverseVPV);
+		// posFar = Transform(posFar, matInverseVPV);
 
 		///*---------3Dレティクルの座標系さん-------*/
 		//// スティックレイの方向
-		//Vector3 spriteDierection;
-		//spriteDierection.x = posFar.x - posNear.x;
-		//spriteDierection.y = posFar.y - posNear.y;
-		//spriteDierection.z = posFar.z - posNear.z;
-		//spriteDierection = Normalize(spriteDierection);
+		// Vector3 spriteDierection;
+		// spriteDierection.x = posFar.x - posNear.x;
+		// spriteDierection.y = posFar.y - posNear.y;
+		// spriteDierection.z = posFar.z - posNear.z;
+		// spriteDierection = Normalize(spriteDierection);
 		//// カメラから照準オブジェクトの距離
-		//const float kDistanceTextObject = 100.0f;
-		//worldTransform3DReticle_.translation_.x = spriteDierection.x * kDistanceTextObject;
-		//worldTransform3DReticle_.translation_.y = spriteDierection.y * kDistanceTextObject;
-		//worldTransform3DReticle_.translation_.z = spriteDierection.z * kDistanceTextObject;
+		// const float kDistanceTextObject = 100.0f;
+		// worldTransform3DReticle_.translation_.x = spriteDierection.x * kDistanceTextObject;
+		// worldTransform3DReticle_.translation_.y = spriteDierection.y * kDistanceTextObject;
+		// worldTransform3DReticle_.translation_.z = spriteDierection.z * kDistanceTextObject;
 
-		//worldTransform3DReticle_.UpdateMatrix();
+		// worldTransform3DReticle_.UpdateMatrix();
 
-		//ImGui::Begin("Player");
-		//ImGui::Text("2DReticle:(%2.2f,%2.2f)", spritePosition.x, spritePosition.y);
-		//ImGui::Text("Near:(%2.2f,%2.2f)", posNear.x, posNear.y);
-		//ImGui::Text("Far:(%2.2f,%2.2f)", posFar.x, posFar.y);
-		//ImGui::Text(
-		//    "3DReticle:(%2.2f,%2.2f,%2.2f)", worldTransform3DReticle_.translation_.x,
-		//    worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+		// ImGui::Begin("Player");
+		// ImGui::Text("2DReticle:(%2.2f,%2.2f)", spritePosition.x, spritePosition.y);
+		// ImGui::Text("Near:(%2.2f,%2.2f)", posNear.x, posNear.y);
+		// ImGui::Text("Far:(%2.2f,%2.2f)", posFar.x, posFar.y);
+		// ImGui::Text(
+		//     "3DReticle:(%2.2f,%2.2f,%2.2f)", worldTransform3DReticle_.translation_.x,
+		//     worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
 
-		//ImGui::Text(
-		//    " player : (% 2.2f,%2.2f,%2.2f)", worldTransform_.translation_.x,
-		//    worldTransform_.translation_.y, worldTransform_.translation_.z);
-		//ImGui::End();
+		// ImGui::Text(
+		//     " player : (% 2.2f,%2.2f,%2.2f)", worldTransform_.translation_.x,
+		//     worldTransform_.translation_.y, worldTransform_.translation_.z);
+		// ImGui::End();
 
-		//ImGui::Begin("bodyNum");
-		//ImGui::Text("%d", bodyNum);
-		//ImGui::Text("%d", bullets_.size());
-		//ImGui::End();
+		// ImGui::Begin("bodyNum");
+		// ImGui::Text("%d", bodyNum);
+		// ImGui::Text("%d", bullets_.size());
+		// ImGui::End();
 
 		// キャラクター攻撃処理
-		//Attack();
+		// Attack();
 		int i = 0;
 		Vector3 tmpPlayerBodyPos = worldTransform_.translation_;
 		//// 弾更新
@@ -244,12 +239,11 @@ void Player::Update(ViewProjection viewProjection) {
 		}
 	}
 
-	//std::list<PlayerBullet*>::iterator *itr = bullets_.begin();
-	//for (int i = 0; i <= bullets_.size(); ++i) {
+	// std::list<PlayerBullet*>::iterator *itr = bullets_.begin();
+	// for (int i = 0; i <= bullets_.size(); ++i) {
 	//	*itr = PlayerBullet::Update2()
 
 	//}
-
 
 	// if (bullet_) {
 	//	bullet_->Update();
@@ -257,7 +251,7 @@ void Player::Update(ViewProjection viewProjection) {
 }
 void Player::Draw(ViewProjection viewProjection_) {
 	model_->Draw(worldTransform_, viewProjection_, textureHandle_);
-	//model_->Draw(worldTransform3DReticle_, viewProjection_, textureHandle_);
+	// model_->Draw(worldTransform3DReticle_, viewProjection_, textureHandle_);
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection_);
 	}
@@ -265,10 +259,10 @@ void Player::Draw(ViewProjection viewProjection_) {
 	bullet_->Draw(viewProjection_);
 	}*/
 }
-void Player::Create(){
-	
+void Player::Create() {
+
 	{
-		
+
 		// 弾があれば破棄する
 		/*if (bullet_) {
 		    delete bullet_;
@@ -293,19 +287,15 @@ void Player::Create(){
 		velocity.x *= kBulletSpeed;
 		velocity.y *= kBulletSpeed;
 		velocity.z *= kBulletSpeed;
-		
+
 		// 速度ベクトルを自機の向きに合わせて回転させる
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
-		
-		//velo = TransformNormal(velo, worldTransform_.matWorld_);
-		
-		
+		// velo = TransformNormal(velo, worldTransform_.matWorld_);
 
 		// 弾を登録する
-		
+
 		newBullet->Initialize(model_, GetWorldPosition(), velo);
-		
 	}
 
 	// ゲームパッドを押したときの処理
@@ -342,14 +332,14 @@ void Player::Create(){
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(),velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}
 };
 void Player::Attack() {
-	
+
 	if (input_->TriggerKey(DIK_SPACE)) {
 		bodyNum++;
 		// 弾があれば破棄する
@@ -376,10 +366,11 @@ void Player::Attack() {
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-	
+
 		// 弾を登録する
 		bullets_.push_back(newBullet);
-		newBullet->Initialize(model_, GetWorldPosition(), {velocity.x*10,velocity.y*10,velocity.z*10});
+		newBullet->Initialize(
+		    model_, GetWorldPosition(), {velocity.x * 10, velocity.y * 10, velocity.z * 10});
 	}
 
 	// ゲームパッドを押したときの処理
@@ -416,7 +407,7 @@ void Player::Attack() {
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(),velocity);
+		newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);

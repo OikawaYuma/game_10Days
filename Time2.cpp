@@ -15,7 +15,7 @@ void Time2::Initialize() {
 
 	// スプライト生成
 	sprite2DReticle_ =
-	    Sprite::Create(textureReticle_, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+	    Sprite::Create(textureReticle_, {640, 80}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 
 	// スプライト生成
 	sprite2DSetumei_ =
@@ -27,18 +27,18 @@ void Time2::Update(int count) {
 		textureReticle_ = TextureManager::Load("10.png");
 		// スプライト生成
 		sprite2DReticle_ =
-		    Sprite::Create(textureReticle_, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		    Sprite::Create(textureReticle_, {640, 80}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	} else if (count >= 60 * 30) {
 		textureReticle_ = TextureManager::Load("30.png");
 		// スプライト生成
 		sprite2DReticle_ =
-		    Sprite::Create(textureReticle_, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		    Sprite::Create(textureReticle_, {640, 80}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 	}
 	else if (count >= 60*15) {
 		textureReticle_ = TextureManager::Load("45.png");
 		// スプライト生成
 		sprite2DReticle_ =
-		    Sprite::Create(textureReticle_, {640, 360}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
+		    Sprite::Create(textureReticle_, {640, 80}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f});
 
 	
 	}
