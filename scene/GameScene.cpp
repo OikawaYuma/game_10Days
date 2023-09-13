@@ -32,6 +32,9 @@ void GameScene::Initialize() {
 	playerTh_ = TextureManager::Load("PLAYER.png");
 	sprite_ = Sprite::Create(playerTh_, {100, 50});
 
+	// BGM
+	BGMth_P = audio_->LoadWave("Low_frequency_porter.mp3");
+	BGMth_T = audio_->LoadWave("Phone_Thinker.mp3");
 	// 3Dモデルの生成
 	model_ = Model::Create();
 
@@ -50,6 +53,8 @@ void GameScene::Initialize() {
 	railCamera_->SetworldTransform_(&player_->GetWorldTransform());
 	title_ = new Title;
 	title_->Initialize();
+	time_ = new Time2;
+	time_->Initialize();
 
 	// 自キャラとレールカメラの親子関係を結ぶ
 	// player_->SetParent(&railCamera_->GetWorldTransform());
@@ -104,6 +109,18 @@ void GameScene::Update() {
 		if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) ) {
 			phase_ = Phase::SETUMEI;
 		}
+
+		flag_P = true;
+		playerTime = 0;
+		if (flag_T == true) {
+			BGMth_Tr = audio_->PlayWave(BGMth_T, true, 0.5f);
+			flag_T = false;
+		}
+		if (input_->PushKey(DIK_SPACE)) {
+			phase_ = Phase::PLAY;
+		}
+
+
 		break;
 	case Phase::SETUMEI:
 		
@@ -111,12 +128,22 @@ void GameScene::Update() {
 			phase_ = Phase::PLAY;
 		}
 		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X) {
+			audio_->StopWave(BGMth_Tr);
 			phase_ = Phase::PLAY;
+
 		}
 		break;
 
 	///-----------PLAY-----------///
 	case Phase::PLAY:
+		flag_T = true;
+		playerTime++;
+		if (playerTime >= 90) {
+			if (flag_P == true) {
+				audio_->PlayWave(BGMth_P, true, 0.35f);
+				flag_P = false;
+			}
+		}
 		// デスフラグの立った弾を削除
 		enemyBullets_.remove_if([](EnemyBullet* bullet) {
 			if (bullet->GetIsDead()) {
@@ -146,6 +173,7 @@ void GameScene::Update() {
 		// 自弾リストの取得
 		playerBullets_ = &player_->Getbullet();
 		gameTimer++;
+		time_->Update(gameTimer);
 		if (gameTimer >= gameTimerRimit) {
 			result_ = new Result;
 			result_->Initialize((int)playerBullets_->size());
@@ -352,6 +380,7 @@ void GameScene::Draw() {
 		title_->DrawSetumei();
 		break;
 	case Phase::PLAY:
+		time_->DrawUI();
 		break;
 	case Phase::RESULT:
 

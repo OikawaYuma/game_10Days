@@ -155,6 +155,12 @@ void Player::Update(ViewProjection viewProjection) {
 			worldTransform_.rotation_.y += (float)joyState1.Gamepad.sThumbLX / SHRT_MAX * kRotSpeed;
 			worldTransform_.rotation_.x -= (float)joyState1.Gamepad.sThumbLY / SHRT_MAX * kRotSpeed;
 		}
+		if (worldTransform_.rotation_.x <= -1.57) {
+			worldTransform_.rotation_.x = -1.57f;
+		}
+		if (worldTransform_.rotation_.x >= 1.57) {
+			worldTransform_.rotation_.x = 1.57f;
+		}
 		worldTransform_.UpdateMatrix();
 
 		// ビューポート

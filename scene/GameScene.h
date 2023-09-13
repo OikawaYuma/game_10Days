@@ -22,6 +22,7 @@
 #include "Result.h"
 #include<sstream>
 #include "Title.h"
+#include "Time2.h"
 
 
 enum class Phase {
@@ -104,7 +105,18 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 	// テクスチャハンドル
 	uint32_t playerTh_;
+	// 音声ハンドル
+	/// TITLE
+	uint32_t BGMth_T = 0;
+	uint32_t BGMth_Tr = 0;
 
+	bool flag_T = true;
+
+	/// Play
+	uint32_t BGMth_P = 0;
+	bool flag_P = true;
+
+	float playerTime = 0;
 	//スプライト
 	Sprite* sprite_ = nullptr;
 
@@ -122,7 +134,7 @@ private: // メンバ変数
 	std::list<Enemy*> enemys_;
 
 	Title* title_ = nullptr;
-	
+	Time2* time_ = nullptr;
 
 	//スポーンタイマー
 	int respownTimer_ = 0;

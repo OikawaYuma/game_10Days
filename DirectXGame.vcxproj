@@ -122,6 +122,7 @@
     <ClCompile Include="RailCamera.cpp" />
     <ClCompile Include="scene\Result.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Time2.cpp" />
     <ClCompile Include="TimeInitialize\TimedCall.cpp" />
     <ClCompile Include="TimeInitialize\TimedCalled.cpp" />
     <ClCompile Include="scene\Title.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="RailCamera.h" />
     <ClInclude Include="scene\Result.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Time2.h" />
     <ClInclude Include="TimeInitialize\TimedCall.h" />
     <ClInclude Include="TimeInitialize\TimedCalled.h" />
     <ClInclude Include="scene\Title.h" />

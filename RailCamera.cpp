@@ -59,12 +59,7 @@ void RailCamera::Update() {
 	} else if (input_->PushKey(DIK_S)) {
 		viewProjection_.rotation_.x += kRotSpeed;
 	}
-	//-1.57で反転
-	if (viewProjection_.rotation_.x <= -1.57) {
-		offset.z *= -1;
-	} else {
-		//	viewProjection_.translation_.y *= -1;
-	}
+	 
 
 	XINPUT_STATE joyState1;
 
@@ -74,7 +69,15 @@ void RailCamera::Update() {
 		    (float)joyState1.Gamepad.sThumbLX / SHRT_MAX * playerRotSpeed;
 		viewProjection_.rotation_.x -=
 		    (float)joyState1.Gamepad.sThumbLY / SHRT_MAX * playerRotSpeed;
-	}
+	} 
+		//-1.57で反転
+		if (viewProjection_.rotation_.x <= -1.57) {
+			viewProjection_.rotation_.x = -1.57f;
+		}
+		if (viewProjection_.rotation_.x >= 1.57) {
+			viewProjection_.rotation_.x = 1.57f;
+		}
+	
 
 	// ビュー行列の更新
 	viewProjection_.UpdateViewMatrix();
