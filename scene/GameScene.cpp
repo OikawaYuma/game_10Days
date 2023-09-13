@@ -30,21 +30,10 @@ void GameScene::Initialize() {
 	sprite_ = Sprite::Create(playerTh_, { 100, 50 });
 
 	// BGM
-	BGMth_ = audio_->LoadWave("Low_frequency_porter.wav");
-	switch (phase_)
-	{
-	case Phase::TITEL:
-		break;
-	case Phase::PLAY:
-		//audio_->PlayWave(BGMth_);
-		break;
-	case Phase::RESULT:
-		break;
-	case Phase::POSE:
-		break;
-	default:
-		break;
-	}
+	BGMth_P = audio_->LoadWave("Low_frequency_porter.wav");
+	BGMth_T = audio_->LoadWave("Phone_Thinker.mp3");
+
+	
 
 	// 3Dモデルの生成
 	model_ = Model::Create();
@@ -100,21 +89,30 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	if (input_->PushKey(DIK_SPACE)) {
-		phase_ = Phase::PLAY;
-	}
+	
 	
 	switch (phase_)
 	{
 	///-----------TITLE-----------///
 	case Phase::TITEL:
+		flag_P = true;
+		if (flag_T == true) {
+			BGMth_Tr = audio_->PlayWave(BGMth_T, true);
+			flag_T = false;
+		}
+		if (input_->PushKey(DIK_SPACE)) {
+			audio_->StopWave(BGMth_Tr);
+			phase_ = Phase::PLAY;
+		}
 		break;
 
 	///-----------PLAY-----------///
 	case Phase::PLAY:
-		
-		audio_->PlayWave(BGMth_);
-
+		flag_T = true;
+		if (flag_P == true) {
+			audio_->PlayWave(BGMth_P);
+			flag_P = false;
+		}
 
 		// デスフラグの立った弾を削除
 		enemyBullets_.remove_if([](EnemyBullet* bullet) {

@@ -102,8 +102,18 @@ private: // メンバ変数
 	uint32_t playerTh_;
 
 	// 音声ハンドル
-	uint32_t BGMth_ = 0;
-	//uint32_t BGMth_1 = 0u;
+	///TITLE
+	uint32_t BGMth_T = 0;
+	uint32_t BGMth_Tr = 0;
+
+	bool flag_T = true;
+
+	///Play
+	uint32_t BGMth_P = 0;
+	bool flag_P = true;
+
+
+
 
 	//スプライト
 	Sprite* sprite_ = nullptr;
