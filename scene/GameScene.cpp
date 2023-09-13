@@ -300,8 +300,7 @@ void GameScene::Update() {
 		break;
 	case Phase::RESULT:
 		
-		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER &&
-		    XINPUT_GAMEPAD_RIGHT_SHOULDER==0) {
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
 			phase_ = Phase::TITEL;
 		}
 		break;
